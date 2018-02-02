@@ -1,0 +1,57 @@
+getwd()#Obtener el directorio de trabajo
+#Para el tipo de archivo de las practivcas, archivo, new file, RMarkdown, chunk, insert chunk
+
+install.packages("readxl")
+climate<-read_excel("climate.xlsx")
+View(climate)
+#Para importar de otra forma install.packages("XLConnect")
+
+install.packages("readxl")
+climate<-read_excel("climate.xlsx")
+View(climate)
+#Para importar de otra forma install.packages("XLConnect")
+
+install.packages("XLConnect")
+library(XLConnect)
+df<-readWorksheetFromFile("climate.xlsx",sheet=1)
+rm(df)
+
+head(climate)#Desplega las primeras lineas del archivo
+
+install.packages("tidyverse")
+require(tidyr)
+arrange(climate,sun)#Ordena de menor a mayor los datos de la variable sun 
+?arrange
+
+
+
+
+set.seed(50)
+xVec<-sample(0:999,250,replace=T)
+xVec
+yVec<-sample(0:999,250,replace=T)
+length(xVec)
+
+
+
+xVec[2]#Posición 2 del vector X
+
+d<-sin(xVec)
+head(d)
+
+#hacer un vector que divida senos entre cosenos, con el numerador sin la ultima posicion y el denominador sin la primera
+
+
+d<-sin(yVec[-length(yVec)])
+e<-cos(xVec[-1])
+f<-d/e#se divide entrada por entrada en los vecotres
+
+
+#Matriz
+#outer
+#help(outer)
+#x%o%x
+help(outer)
+
+x<-0:4
+outer(x,x,"+")#con el ^multiplicas y asi sucesivamente 
