@@ -28,8 +28,17 @@ resta<-y1vec-x1vec
 resta
 
 #b)
+pri<-xvec[-250] 
+prim<-pri[-249]
 
+seg<-2*xvec[-250]
 
+ter<-xvec[-1]
+terc<-ter[-1]
+
+terc
+
+vect<-prim+seg-terc
 ###################################################################################################################
 #3
 #a)
@@ -51,3 +60,4 @@ col(nula)#devuelve una matriz de enteros indicando el numero de columna
 
 #b)
 ?outer
+
