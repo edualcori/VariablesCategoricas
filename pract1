@@ -33,14 +33,16 @@ resta
 pri<-xvec[-250] 
 prim<-pri[-249]
 
-seg<-2*xvec[-250]
+seg<-xvec[-250]
+segu<-seg[-1]
+segun<-2*segu
 
 ter<-xvec[-1]
 terc<-ter[-1]
 
 terc
 
-vect<-prim+seg-terc
+vect<-prim+segun-terc
 ###################################################################################################################
 #3
 #a)
@@ -80,5 +82,7 @@ for(i in 1:5)
   nula[i,i+1]<-1
   nula[i+1,i]<-1
 }
+
+
 
 
