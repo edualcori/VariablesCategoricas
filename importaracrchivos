@@ -1,0 +1,35 @@
+getwd()
+rm(list = ls())#Borrar todos los archivos del ambiente
+#Importación de los archivos más comunes 
+
+#Archivos .txt
+tabla1<-read.table("tabla1.txt",header=F)#header es para decir si tiene o no encabezados
+View(tabla1)
+#Importar archivos en linea
+#http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt
+tabla2<-read.table("http://www.nrc.gov/reading-rm/doc-collections/event-status/reactor-status/PowerReactorStatusForLast365Days.txt",header=T,sep="|")
+tabla3<-read.table("tabla3.txt",header=F,sep = "/",strip.white = T,na.strings = "VACIO")#Strip.white ignorar espacios en blanco PARA QUE NO LOS TOME COMO UNA COLUMNA MÁS 
+
+#Archivos CSV
+tabla4<-read.csv("tabla4.csv",header=T,quote = "\"",stringsAsFactors = T,strip.white = T)#quote dice que las cadenas de caracteres se delimitan con comillas
+#para que los posibles resultados los tome como categorias o factores es con stringsAsFactors(LAS CADENAS(LESTRAS) TOMARLAS COMO CATEGORIAS)
+
+#Cuando a una fila le falta una separacion de columna y una cadena, para hacer que R lo ajuste como los demás (llenar espacipos vacios con fill)
+tabla5<-read.csv2("tabla5.csv2",header = F,quote="\"",row.names = c("M","N","O","P","Q"),col.names = c("X","Y","Z","A","b"),fill = T,strip.white = T,stringsAsFactors = T)
+
+library(XLConnect)
+climate<-readWorksheetFromFile("climate.xlsx",sheet=1)
+#Para tener una base que empiece en la fila 26 y alguna columna en especial
+climate2<-readWorksheetFromFile("climate.xlsx",sheet=1,startRow=26,endCol=4)
+#Para tomar regiones de manera directa(un rango)
+climate3<-readWorksheetFromFile("climate.xlsx",sheet=1,region="A1:G13")
+
+#Definir un objeto en el que se guarden todas las hojas de un libro de excel y luego ir llamando lo que necesitemos 
+wb<-loadWorkbook("PortfoliobyLoanStatus.xls")
+#Este wb tiene cinco hojas , para trabajar con sólo una
+direcLoan<-readWorksheet(wb,sheet=1,startRow=6)
+
+
+#Otra Paqueteria para abris hojas de cálculo
+install.packages("xlsx")
+require(xlsx)
