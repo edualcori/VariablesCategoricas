@@ -73,11 +73,12 @@ nula[6,5]<-1
 
 nula
 
+#Segunda forma, con un for
 
-
-
-
-
-
+for(i in 1:5)
+{
+  nula[i,i+1]<-1
+  nula[i+1,i]<-1
+}
 
 
