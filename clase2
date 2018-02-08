@@ -1,0 +1,138 @@
+rm(list = ls())
+vector_numerico<-c(1,10,15)
+vector_caracteres<-c("a","b","c")
+vector_logico<-c(T,F,T)
+vector_logico
+gcartas<-c(140,-50,20,-120,240)#persona que juegas cartas perdio y ganó eso a lo largo de la semana
+
+gapdep<-c(-24,-50,100,-350,10)#perdio y ganó eso en apuestas deportivas 
+gapdep
+dias<-c("lunes","martes","miercoles","jueves","viernes")#ponerle nombres a los vetores anteriores
+
+names(gcartas)<-dias
+names(gapdep)<-dias
+
+#Para saber en resumen si ganó o perdió dinero el jugador 
+(gantotales<-gcartas+gapdep)
+
+#Para sumar los elementos de un vector
+totalcar<-sum(gcartas)
+totalcar
+totalap<-sum(gapdep)
+totalap
+totalcar>totalap
+
+#Para saber que pasó de martes a jueves
+(cartas_entresemana<-gcartas[2:4])
+
+(cartas_inicio<-gcartas[dias[1:3]])
+mean(cartas_inicio)
+
+
+gcartas[1]
+gcartas["lunes"]
+
+#Para hacer una comparación
+(vector_selección<-gcartas>0)#se va a fijar si en cada entrada del vector gcartas es mayor que cero
+(dias_gan_cartas<-gcartas[vector_selección])
+
+(vector_seleccion<-gapdep>0)
+(dias_gan_apuestas<-gapdep[vector_seleccion])
+
+
+###############################MATRICES#################################
+
+matrix(1:9,byrow=T,nrow=3)
+prod_A<-c(460.998,314.4);prod_B<-c(290.475,247.9);prod_C<-c(309.306,165.8)
+ventas<-c(prod_A,prod_B,prod_C)
+ventas
+matriz_productos<-matrix(ventas,nrow = 3,byrow = T)
+matriz_productos
+
+#Poniendole nombres a la matriz
+region<-c("EU","Resto Mundo")
+productos<-c("Producto A","Producto B","Producto C")
+rownames(matriz_productos)<-productos
+colnames(matriz_productos)<-region
+matriz_productos
+
+
+#Operaciones con matrices
+#TOTALES POR PRODUCTO(FILAS)
+(ventas_mundiales_productos<-rowSums(matriz_productos))
+
+produ_A2<-c(474.5,552.5);prod_B2<-c(310.7,338.7);prod_C2<-c(380.3,468.5)
+ventas2<-c(produ_A2,prod_B2,prod_C2)
+matriz_productos2<-matrix(ventas2,nrow = 3,byrow = T)
+rownames(matriz_productos2)<-productos2
+colnames(matriz_productos2)<-region
+productos2<-c("Producto A2","Producto B2","Producto C2")
+
+
+#JUNTAR LAS DOS MATRICES 
+(prod_total<-rbind(matriz_productos,matriz_productos2))
+#Sobre esta nueva matriz ver lasventas totales por region (columnas)
+(ventas_mundiales_region<-colSums(prod_total))
+
+
+
+#Acceder a elementos de la matriz
+prod_total[3,2]
+#desplegar un afila o columna entera
+#desplegar columna resto del mundo[2]
+prod_total[,2]
+#promedio de las ventas en el resto del mundo, columna 2
+mean(prod_total[,2])
+
+#Acceder a un rango en una matriz o a un subconjunto
+(algunos_restoMundo<-prod_total[1:2,2])#Primeras dos filas de la segunda columna
+mean(algunos_restoMundo)
+
+#Si suponemos que cada entrada al cine costaba cinco dolares , para saber cuantos fueron
+
+prod_total/5
+#si los precios fueron diferentes para cada pelicula
+
+precio_unidad<-c(5,6,7,4,4.5,4.9)#primera pelicula costaba 5. la segunda 6......
+precio_unidad
+matriz_preciosUnidad<-matrix(precio_unidad,ncol = 2,nrow = 6,byrow = F)
+
+prod_total/matriz_preciosUnidad
+
+
+#############################################################################################################
+##############################               DATA FRAMES             ########################################
+#Datos precargados en forma de DATA FRAME
+help(mtcars)
+
+head(mtcars)  
+tail(mtcars)
+
+#PARA VER EL RESUMEN DE UN DATA FRAME
+str(mtcars)
+
+#CREAR UN DATA FRAME
+nombre<-c("Mercurio","Venus","tierra","marte","jupiter","saturno","urano","neptuno")
+tipo<-c("solido","solido","solido","solido","Gas","Gas","hielo","hielo")
+diametro<-c(.382,.949,1,.532,11.209,9.449,4.007,3.883)
+rotación<-c(58.64,-243.02,1,1.03,.41,.43,-.72,.67)
+anillos<-c(F,F,F,F,T,T,T,T)
+planetas_df<-data.frame(nombre,tipo,diametro,rotación,anillos)
+planetas_df
+planetas_df[1,2]
+planetas_df[1:3,2:4]#info de los primeros tres planetas y tres propiedades
+#Información de Marte
+planetas_df[4,]
+#Por el nombre de la columna
+planetas_df[1:5,"diametro"]
+
+#Vector paraverificar si el planeta tiene anillos
+
+vector_anillos<-planetas_df[,5]
+vector_anillos<-planetas_df$anillos
+
+subset(planetas_df,anillos==T)
+
+
+#Planetas con diametro menor a 1
+subset(planetas_df,diametro<1)
