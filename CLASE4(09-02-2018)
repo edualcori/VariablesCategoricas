@@ -1,0 +1,98 @@
+
+################################################## CLASE 3 #################################################
+
+
+
+#Dado un data frame reordenas los renglones con respecto a columnas
+posiciones<-order(planetas_df$diametro)
+planetas_df[posiciones,]#Ordenar por filas de acuerdo al diametro en forma ascendente
+
+#Creando un data.frame con vectores de escritores
+
+Died.At<-c(22,40,72,41)
+Writer.At<-c(16,18,36,36)
+First.Name<-c("John","Edgar","Walt","Jane")
+Second.Name<-c("Doe","Poe","Whitman","Austen")
+Sex<-c("MALE","MALE","MALE","FEMALE")
+Date.of.Death<-c("2015-05-10","1849-10-07","1892-03-26","1817-07-18")
+
+
+writer_df<-data.frame(Died.At,Writer.At,First.Name,Second.Name,Sex,Date.of.Death)
+#Cadenas de caracteres en un data frame se toma como una variable categórica
+#Como en este caso el nombre Y FECHA no queremos que sea variabe categórica:
+
+writer_df2<-data.frame(Died.At,Writer.At,I(First.Name),I(Second.Name),Sex,Date.of.Death)#se cambio el nombre a solo caracter
+#"para cambiar la fecha a NO VARIABLE CATEGÓRICA
+help("as.Date")
+writer_df3<-data.frame(Died.At,Writer.At,I(First.Name),I(Second.Name),Sex,as.Date(Date.of.Death,"%Y-%m-%d"))
+
+
+#Cambiando el nombre  a las columnas
+
+colnames(writer_df3)#Para ver el nombre de las columnas del DF
+#Reasignando los nombres
+ 
+names(writer_df3)<-c("Age.At.Death","Age.As.Writer","Name","Surname","Gender","Death") #COMANDO NAMES SE REFIERE A LAS COLUMNAS YA AUTOMATICAMENTE
+#Cambiando nombre a las filas 
+rownames(writer_df3)<-c("ID1","ID2","ID3","ID4")
+
+dim(writer_df3)
+#para saber el numero de columnas de un data frame
+length(writer_df3)
+
+#Recogiendo en otro objeto las primeras doc columnas
+Ages<-writer_df3[,1:2]
+
+apply(Ages,2,median)#El número dos hace referencia a columnas
+
+apply(Ages, 2, mean)#Para la edad promedio de muerte y a la que empezaron a escribir por columna
+
+
+#Definir un data frame vacio
+ab<-data.frame()
+Age<-numeric()
+Name<-character()
+ID<-integer()
+Gender<-factor()#factor=variable categorica
+Date<-as.Date(character())
+ab<-data.frame(Age,Name,ID,Gender,Date)
+
+#¿Cómo iriamos llenando este data frame que está vacio?
+ab$Age<-c(34,56,24,57,21,22)
+
+#OBTENIENDO UN DATA FRAME CON LAS COLUMNAS 3 Y 4
+writer_names_df<-writer_df3[1:4,3:4]
+
+#Otra forma
+writer_names_df<-writer_df3[1:4,c("Name","Surname")]
+writer_names_df
+
+jane_writer_df<-subset(writer_df3,writer_df3$Name=="Jane")
+jane_writer_df
+
+
+#Otra opcion para hacer subconjuntos es la función grep
+#Aqellos escritores que en su muerte eran mayores a 40 años
+
+forty_writers_df<-writer_df3[grep("4",writer_df3$Age.At.Death),]#El 4 dice que buscará todas aquellas edades que tengan un 4
+
+#Como eliminar filas o columnas
+#Eliminar la edad de defunción
+
+writer_df3$Age.At.Death<-NULL
+writer_df3
+
+#Ahora, si queremos elinimar el apellido DOE QUE ESTA EN LA POSICION 1,3
+writer_df3[1,3]<-NA
+
+
+#Cuando quiero eliminar filas  la primera y la tercera fila 
+filas_a_mantener<-c(F,T,F,T)
+limited_writers_df<-writer_df3[filas_a_mantener,]
+#si quisieramos mantener a los que borramos solo usamos signo de admiaración=negación
+less_writers_df<-writer_df3[!filas_a_mantener,]
+less_writers_df
+
+
+
+#PRACTICA PARA EL MARTES
