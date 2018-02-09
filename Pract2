@@ -1,0 +1,79 @@
+setwd("C:\\Users\\8\\Documents\\DECIMO\\Análisis de Variables Categóricas")
+####################################Ejercicio 1#####################################
+
+Id<-rep(c(1,2,3,4),each=3)
+Letter<-rep(letters[1:3],4)
+x<-seq(1,43,along.with=Id)
+y<-seq(-20,0,along.with=Id)
+df<-data.frame(Id,Letter,x,y)
+df
+
+####################################Ejercicio 2#####################################
+?reshape
+reshape(df,timevar='Letter',idvar='Id',direction='wide')
+
+####################################Ejercicio 3#####################################
+Id<-c(1,2,3,4)
+Age<-c(14,12,15,10)
+Sex<-c('F','M','M','F')
+Code<-c('a','b','c','d')
+df1<-data.frame(Id,Age)
+df2<-data.frame(Id,Sex,Code)
+
+M<-merge(df1,df2,by="Id")
+M
+?merge
+####################################Ejercicio 4#####################################
+score<-c(100,98,94,99)
+id2<-c(4,3,2,1)
+df3<-data.frame(id2,score)
+N<-merge(M,df3,by.x='Id',by.y='id2')
+N
+####################################Ejercicio 5#####################################
+N$Sex<-NULL
+N$Code<-NULL
+?stack
+stack(N)
+####################################Ejercicio 6#####################################
+trees
+mean_tree=apply(trees,2,mean)
+max_tree=apply(trees,2,max)
+min_tree=apply(trees,2,min)
+sum_tree=apply(trees,2,sum)
+A=data.frame(mean_tree,min_tree,max_tree,sum_tree)
+A=t(A)
+A
+
+
+
+####################################Ejercicio 7#####################################
+A[order(A[,1]),]
+row.names(A)=c('mean','min','max','sum')
+A
+####################################Ejercicio 8#####################################
+Integers<-integer()
+Logic<-logical()
+Doubles<-double()
+Characters<-character()
+df<-data.frame()
+df<-data.frame(Integers,Logic,Doubles,Characters)
+df
+####################################Ejercicio 9#####################################
+X<-c(1,2,3,1,4,5,2)
+Y<-c(0,3,2,0,5,9,3)
+XY<-data.frame(X,Y)
+XY
+
+#1) Elementos duplicados
+duplicated(XY)
+?duplicated
+#2)Mantener únicamente las filas que no tengan duplicados
+?unique
+unique(XY)
+####################################Ejercicio 10#####################################
+Titanic
+class(Titanic)#Es una tabla entonces la convertimos a data frame
+Titanic<-as.data.frame(Titanic)
+
+Titanic1<-subset(Titanic, Class=='1st' & Survived=='No',select=c(Sex,Age,Freq))
+Titanic1
