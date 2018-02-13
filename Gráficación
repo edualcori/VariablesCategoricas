@@ -1,0 +1,147 @@
+############################################ VARIABLES CATEGÓRICAS EN R ##########################################################
+vector_sexo<-c("Mujer","Hombre","Mujer","Mujer","Hombre")
+class(vector_sexo)
+factor_vector_sexo<-factor(vector_sexo) #Para categorizar el vector
+class(factor_vector_sexo)
+vector_sexo
+#Variables ordinales en cada categoria hay jerarquia
+vector_animales<-c("Perro","Caballlo","Koala","Buitre")
+factor_vector_animales<-factor(vector_animales)
+factor_vector_animales
+#Los niveles los ordena automaticamente por orden alfabético
+#Para especificar a R que queremos jerarquia entre los diferentes niveles 
+
+#Vector en el que está implicado lo nominal
+vector_temperatura<-c("Alta","Baja","Alta","Baja","Media")
+factor_vector_temperatura<-factor(vector_temperatura,order=T,levels = c("Baja","Media","Alta"))
+factor_vector_temperatura
+#Ordinal =orden
+
+#Dado un vector
+vector_encuesta<-c("H","M","M","H","H")
+factor_vector_encuesta<-factor(vector_encuesta)
+#De que manera podemos cambiar el nombre de los niveles
+levels(factor_vector_encuesta)<-c("Hombre","Mujer")#En orden alfabético ponerlos 
+factor_vector_encuesta
+
+#summary
+summary(vector_encuesta)#este con el vector no siendo factor da la longitud, clase y modo
+summary(factor_vector_encuesta)#Cuenta cuantos hay en cada nivel
+
+Hombre<-factor_vector_encuesta[1]
+Mujer<-factor_vector_encuesta[2]
+Hombre
+
+a<-factor_vector_temperatura[1]#La primera entrada es alta
+b<-factor_vector_temperatura[2]#La segunda entrada es baja
+a<b
+
+#Definir un vector de velocidad con cinco entradas
+vector_velocidad<-c("Media","Baja","Baja","Media","Alta")
+factor_vector_velocidad<-factor(vector_velocidad,ordered = T,levels = c("Baja","Media","Alta"))
+summary(factor_vector_velocidad)
+
+da2<-factor_vector_velocidad[2];da5<-factor_vector_velocidad[5]
+da2>da5#Da falso porque baja no es mayor que alta
+factor_vector_velocidad
+
+
+################################################ LISTAS ######################################################################
+mi_vector<-1:10
+mi_matriz<-matrix(1:9,ncol = 3)
+View(mtcars)
+mi_df<-mtcars[1:10,]#solo las primeras 10 filas de este df
+mi_lista<-list(mi_vector,mi_matriz,mi_df)
+mi_lista
+
+#Definir una nueva lista con respecto a la pelicula "Shinning"
+pel<-"El resplandor"
+act<-c("Jack Nicholson","Shelley Duvall","Danny Lloyd","Scatman Crothers","Barry Nelson")
+puntaje<-c(4.5,5,5)
+fuente<-c("IMBD1","IMBD2","IMBD3")
+comentarios<-c("Mejor Pelicula de Terror que he visto","Una pelicula brillante de Stanley Kubrik","Obra maestra del terror psicológico")
+
+res<-data.frame(puntaje,fuente,comentarios)
+res
+
+lista_resplandor<-list(pel,act,res)
+lista_resplandor
+
+#Para seleccionar elementos de esa lista
+lista_resplandor[[1]]
+lista_resplandor[[2]]
+lista_resplandor[[2]][2]#Del segundo elemento de la lista(actores) el segundo actor
+
+#Agregar información a la lista
+lista_completa_resplandor<-c(lista_resplandor,estreno=1980)
+lista_completa_resplandor
+
+
+#Para cambiar el nombre de los elementos de la lista
+nueva_lista<-list(titulo=lista_completa_resplandor[[1]],reparto=lista_completa_resplandor[[2]],resena=lista_completa_resplandor[[3]],estreno=1980)
+nueva_lista
+
+#Si queremos sólo Barry Nelson
+nueva_lista$reparto[5]
+
+
+
+
+########################################################## GRAFICACIÓN #################################################################################
+#INSTALAR gplots,venneuler,manipulate,RColorBrewer,ggplot2
+install.packages("gplots")
+install.packages("venneuler")
+
+
+#Tres tipos de graficas, de nivel alto,de bajo nivel(agregar info extra, lineas ecxtra, etiquetas), interactivas
+
+demo(graphics)
+#Para cuando los amrgenes no se ajustan a la grafica
+x11()
+par(opar)  
+x<-seq(10, 870,by=10)
+x
+plot(x)
+
+set.seed(13)#generar numeros aleatorios con numero semilla 13
+x<--30:30
+y<-3*x + 2 + rnorm(length(x),sd=20)
+plot(x,y)#x eje horizontal, y eje vertical
+x11()
+#Graficación de data frames
+help("airquality")
+airquality[1:2,]
+plot(airquality)
+
+#Ir agregando graficas
+par(mfrow=c(2,1))#va a dividir ña region de graficación en dos fila sy una columan
+#graficar en el eje horizontal el ozono y en el vertival la temperatura
+plot(airquality$Ozone,airquality$Temp,main = "airquality$Ozone,airquality$Temp")
+attach(airquality)#de los nombres de un data frame para que los reconozca sin tewner que referenciar la base
+Ozone#ya guardó los nombres en la memoria
+
+plot(Ozone,Temp,main = "plot(Ozone,Temp)")
+
+detach(airquality)#quitp el comando y ya no me reconoce los nombres 
+boxplot(airquality)#la que da el promedio, maximo, minimo
+#para dividir el area de graficación en dos filas dos columnas
+par(mfrow=c(2,2))
+
+#la virgulilla da cual es la variable dependiente y cual la independiente "~"
+boxplot(airquality$Ozone~airquality$Month,col=2:6,xlab="month",ylab="ozone",sub="box")#sub es pala subtitulo a la gráfica, ozono variable dependiente, mes independiente
+title("Graficas equivalentes")
+
+plot(factor(airquality$Month),airquality$Ozone,col=3:7,xlab="Mes",ylab="Ozono",sub="plot(factor(airquality$Month),airquality$Ozone)")
+
+
+
+##################################### FUNCION tapply ######################################################################
+help(tapply)#Para un arreglo aplica una función entrada por entrada o celda por celda
+x11()
+
+mesOzMedia<-tapply(airquality$Ozone,factor(airquality$Month),mean,na.rm=T)#por mes hacer la media del ozono
+par(mfrow=c(1,2))
+barplot(mesOzMedia,col=7:11,main="Media del Ozono por mes")
+
+pie(mesOzMedia,col=rainbow(5))#gráfica de pie
+
