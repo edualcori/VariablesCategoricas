@@ -1,0 +1,169 @@
+#usaremos gplots y venneuler
+x11()
+
+install.packages('venneuler')
+library(VennDiagram)
+install.packages("gplots")
+#variable aleatorios con distribución t
+xt <- rt(100,3)
+?rt
+#histograma
+hist(xt)
+#densidad
+plot(density(xt))
+#muestra
+sample(letters,10)
+
+#
+tt <- lapply(1:3,function(x) sample(letters,10))
+?lapply
+View(tt)
+?function(x)
+names(tt)<-c("Lucia","Katia","Elena")
+tt
+#diagrama de venn
+venn(tt)
+?ven
+#letters letras minusculas y LETTERS letras mayusculas
+tt<-lapply(1:4, function(x) sample(LETTERS,10))
+tt
+#paste para pegar nombre a cada lista de elementos
+names(tt)<-paste("Lista",1:4)
+venn(tt)
+
+#crear una función
+intersectmatrix<-function(tt) {
+  allElements <- unique(unlist(tt))
+  outMatt<-sapply(1:length(tt), function(i) allElements%in%tt[[i]])
+  rownames(outMatt)=allElements
+  colnames(outMatt)=names(tt)
+  return(outMatt)
+}
+
+#definir nuevo objeto y aplicar la función
+xx<-intersectmatrix(tt)
+print(xx[1:4,])
+plot(venneuler(xx))
+
+#venn para 5 
+tt<-lapply(1:5, function(x) sample(LETTERS,15))
+names(tt) <- sapply(tt, function(x) paste(sort(x), collapse =""))
+venn(tt)
+plot(xx)
+plot(xt)
+#eliminar los ejes
+plot(xt,axes = F)
+#diferentes graficas
+plot(xt, type = "p")
+plot(xt, type = "l")
+plot(xt, type = "b")
+plot(xt, type = "o")
+plot(xt, type = "h")
+plot(xt, type = "n")
+#nombrar ejes, título, subtítulo 
+plot(xt, type = "h", xlab = "eje x", ylab = "eje y", main = "Título", sub = "subtítulo")
+#ejemplo simple de graficas con el data frame cars
+View(cars)
+#hacer disponibles los objetos
+attach(cars)
+speed
+#vista del cuadrante
+plot(cars, type="n", xlab="Velocidad (mph)", ylab="Distancia (ft)")
+#elemento menores a 15
+points(speed[speed<15], dist[speed<15], pch="s",col="blue")
+#elementos mayores a 15
+points(speed[speed>=15], dist[speed>=15], pch=25,col="red")
+#
+lines(lowess(cars),col="gray")
+?lowess
+#establecer que representa cada simbolo
+legend(5, 120, pch = c("s",25),col = c("blue","red"), legend = c("Lento","Rapido"))
+?legend
+###Funciones
+
+#convertir grados F a C con funciones
+#function(variables de las que depende la función)
+#sin el return r despliega la ultima variable que se definio
+F_a_C <- function(temp_F)
+{ 
+  temp_C <- (5/9)*((temp_F)-32)
+  return(temp_C)
+}
+#pruebas de la función
+#punto de ebullición
+F_a_C(212)
+#punto de congelación
+F_a_C(32)
+
+# de C a K
+C_a_K <- function(temp_C)
+{ 
+  temp_K <- temp_C+273.15
+  return(temp_K)
+}
+#cero absoluto
+C_a_K(-273.15)
+
+# de F a K comparando las funciones anteriores
+F_a_K <- function(temp_F)
+{ 
+  temp_C <- F_a_C(temp_F)
+  temp_K <- C_a_K(temp_C)
+  return(temp_K)
+}
+
+F_a_K(32)
+
+#otra forma más rapida
+C_a_K(F_a_C(32))
+
+
+#definimos dos vectores original x y envoltorio y
+x<-c("a","b","c")
+y<-c(x,"d")
+y
+
+envolver <- function(original, envoltorio)
+{
+  respuesta <- c(envoltorio, original, envoltorio)
+  return(respuesta)
+}
+
+x<-c("Este mensaje esta entre asteriscos")
+y<-c("****")
+envolver(x,y)
+
+
+
+exterior <- function(v)
+{
+  primero<-v[1]
+  ultimo<-v[length(v)]
+  respuesta <- c(primero, ultimo)
+  return(respuesta)
+}
+exterior(1:10)
+
+#otra función
+input_1 = 20
+miSuma <- function(input_1, input_2=10)
+{
+  output<-input_1+input_2
+  return(output)
+}
+# el 3 es el segundo argumento imput_2
+miSuma(input_1=1,3)
+
+miSuma(imput_2=3)
+
+
+#Pruebas y documentación
+centrar<-function(datos,centro)
+{
+  nuevos_datos<-(datos-mean(datos))+centro
+  return(nuevos_datos)
+}
+
+
+z<-c(0,0,0,0,0)
+centrar(z,3) 
