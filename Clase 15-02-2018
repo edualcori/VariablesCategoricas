@@ -167,3 +167,23 @@ centrar<-function(datos,centro)
 
 z<-c(0,0,0,0,0)
 centrar(z,3) 
+
+
+
+
+graficos<-function(nombre){
+a<-apply(nombre,2,mean)
+b<-plot(a)  
+return(b)
+}
+
+x11()
+graficos(inflammation)
+
+inflammation<-as.data.frame(read.csv("inflammation.csv"))
+inflammation[,40]
+
+a<-apply(inflammation,2,mean)
+plot(a)
+
+
