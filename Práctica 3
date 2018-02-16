@@ -88,5 +88,36 @@ paste("La media es: ",a,"La desviación estándar es: ",b,"La mediana es: ",c)
 
 estadisticos(numbers)  
 
-#################################################### EJERCICIO 7 ###############################################################
+
+#Crear una función que dado un entero, calcule cuantos divisores distintos de 1 y de si mismo tiene. Hacer que la función despliegue dichos divisiores 
+
+
+
+divisores<-function(a){
+bandera=0  
+  
+  for(i in 2:(a-1)){
+  
+  if ((a/i)%%1==0){
+    
+  contador=bandera+1
+  bandera=bandera+1
+  
+  }
+    else{
+      paste("No hay")
+    }
+  
+   next
+    
+  }
+return(paste("El numero: ",a,"tiene ",contador," divisores diferentes de 1 y de si mismo"))
+
+}
+
+
+divisores(12)
+#divisores de 12
+#1,2,3,4,6,12
+
 
