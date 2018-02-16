@@ -187,3 +187,22 @@ a<-apply(inflammation,2,mean)
 plot(a)
 
 
+#hacer un ejercicio en el que crear una funcion que el argumento sea el nombre del archivo y devuelva gráficos de media,mediana 
+
+analizar<-function(filename){
+#Grafica la media, minimo, maximo por columnas
+#el input debe ser una cadena de caracteres de un archivo csv
+datos<-read.csv(file=filename,header=F)
+media_inf<-apply(datos,2,mean)
+max_inf<-apply(datos,2,max)
+min_inf<-apply(datos,2,min)
+x11()
+par(mfrow=c(1,3))
+plot(media_inf,sub="Media")
+plot(max_inf,sub="Máximo")
+plot(min_inf,sub="Mínimo")
+}
+
+
+analizar("inflammation.csv")#con comillas
+
