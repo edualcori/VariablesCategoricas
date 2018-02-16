@@ -1,0 +1,92 @@
+setwd("C:\\Users\\8\\Documents\\DECIMO\\Análisis de Variables Categóricas")
+#################################################### EJERCICIO 1 ###############################################################
+#Crear una función que regrese el valor absoluto de la diferencia de dos enteros
+
+resta<-function(a,b)
+{
+  if ((a-b)>0){
+   
+     a-b
+  }
+  else 
+  {
+    -(a-b)
+  }
+}
+
+resta(9.58,10)
+
+#################################################### EJERCICIO 2 ###############################################################
+#Elaborar una función que regrese TRUE si un entero dado está en alguna entrada de un vector 
+
+
+
+
+coincidir<-function(a,B)#Donde a es el entero y B es el vector
+{
+  if( which(a %in% B)==1){
+    d<-"TRUE"
+    return(d)
+  }
+  else{
+    d<-"No hay ningún valor en el vector"
+    return(d)
+  }
+}
+
+
+coincidir(2,X)
+
+#################################################### EJERCICIO 3 ###############################################################
+#Crear una función que dado un data frame , imprima en pantalla el nombre de la columna y la clase de datps que contiene
+ 
+
+ 
+nombre<-function(a,B){
+b<-as.character(names(B[a]))
+c<-as.character(class(B[,a]))
+d<-paste(b,"es",c)
+return(d)
+}#Donde a es el numero de la columna y B es el dataframe
+B<-mtcars
+nombre(4,B)
+
+#################################################### EJERCICIO 4 ###############################################################
+#Crear una función único que dado un vector regrese el vector original sin elementos duplicados 
+unico<-function(x){
+  y<-unique(x)
+  return(y)
+}
+
+unico(X)
+#################################################### EJERCICIO 5 ###############################################################
+#Crear una función que dados un vector y un entero, regrese cuantas veces el entero aparece en el vector
+
+contar<-function(a,A){
+
+b<-table(A)
+c<-b[names(b)==a]
+return(c)
+}
+
+numbers <- c(4,23,4,23,5,43,54,56,657,67,67,435,453,435,324,34,456,56,567,65,34,435)
+contar(435,numbers)
+
+
+
+
+#################################################### EJERCICIO 6 ###############################################################
+#Crear una función que dados un vector, imprima en la pantalla la media, la desviación estandar y la mediana
+?lapply
+
+estadisticos<-function(x){
+a<-mean(x)
+b<-sd(x)
+c<-median(x)  
+paste("La media es: ",a,"La desviación estándar es: ",b,"La mediana es: ",c)  
+}
+
+estadisticos(numbers)  
+
+#################################################### EJERCICIO 7 ###############################################################
+
