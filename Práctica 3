@@ -121,4 +121,35 @@ return(paste("El numero: ",a,"tiene ",contador," divisores diferentes de 1 y de 
 }
 
 
+
+##7 Crear una función que dado un entero, despliegue sus divisores distintos de 1 y de si mismo 
+f_divisores<-function(n)
+{
+  i<-2
+  contador<-0
+  
+  while (i<=n/2) 
+  {
+  if(n%%i==0)
+      {
+       contador=contador+1
+       cat(i,"\n")#Despliega elementos de la memoria
+      }
+    
+  i<-i+1  
+    }
+  contador
+}
+
+f_divisores(16)
+
+
+
+
+
+
+
+
+
+
 divisores(465)
