@@ -37,7 +37,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ```
-##Ejercicio 2
+##Ejercicio 3
 
 ##WALD EJERCICIO A
 ```{r}
@@ -142,6 +142,27 @@ round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * sqrt(var.ac),4)
 ```
 
 
+
+## EJERCICIO 4
+```{r}
+#Suponga que se toman muestras a 750 mujeres embarazadas para estimar la presencia
+#de clamidia en ese sector de la población. De las 750 mujeres, 48 dieron positivo para
+#la enfermedad. Con esta informaciÓn:
+
+#1.Hay n ensayos identicos:
+#2. Existen dos posibles resultados para cada ensayo.
+#3. Los ensayos son independientes unos de otros. No existe factor alguno en la ejecución de los ensayos que pueda causar que un subconjunto de los ensayos se comporte de manera similar a otro.
+#4. La probabilidad de éxito permanece constante para cada ensayo.
+#5. La variable aleatoria de interés W es el número de éxitos.
+
+#1)Existen 750 ensayos identicos, es decir cada una de las 750 mujeres muestreadas representa un intento por parte de los investgadores para encontrar la presencia de la clamidia, es decir, para que se cumpla este requisito no deberían influir factores como la edad de la mujer, habitos, alimentación, etc, lo anterior, como ya se habia mencionado para cumplir con el requerimento de ensayos idénticos.
+#2) Existe únicamente la posibilidad de que la mujer tenga clamidia o no.
+#3)
+#4)
+#5)
+
+
+```
 
 
 
