@@ -1,0 +1,27 @@
+#Considerese los experiemtnos para estimar pi para un problema en particular(pi es la probabilidad de éxito)
+
+#1.Hay n ensayos identicos:
+#2. Existen dos posibles resultados para cada ensayo.
+#3. Los ensayos son independientes unos de otros. No existe factor alguno en la ejecución de los ensayos que pueda causar que un subconjunto de los ensayos se comporte de manera similar a otro.
+#4. La probabilidad de éxito permanece constante para cada ensayo.
+#5. La variable aleatoria de interés W es el número de éxitos.
+
+#a)La taza de germinación de cierta clase de semillas despu´es de haber sido plantadas en sustrato
+#1) En este caso el experimento expresa que fueron plantadas 64 semillas, estas representan el número de intentos, es decir en de las 64 semillas, hay 64 posibilidades de que germine alguna.
+#2)Existen sólo dos posibles resultados, que la semille germine o no germine en el periodo del séptimo al catorceavo dia, margen indicado en el empaque
+#3) Cada semilla fue plantada de manera independiente, el hecho de que una semilla germine o no depende de cada semilla, es decir, ya sea la composición de cada semilla o bien el tipo de condiciones que le tocó a cada una, grado de humectación, nivel de sol, etc. El que se plante una semilla y que esta germine, no depende de las que se hayan plantado antes
+#4) La probabilidad de éxito permanece constante para cada ensayo porque únicamente existen dos opciones para cada semilla, que germine o no lo haga, este hecho se conserva al tiempo que se cumple que cada ensayo es independiente, además los ensayos(plantar una semilla) son identicos en sentido estricto.
+#5) La variable de interés es encontrar el número de éxitos, cuantas de las 64 semillas plantadas inicialmente lograron germinar en el periodo de germinación establecido en su empaque, en realidad ese es el verdadero interés con el objetivo de encontrar los parametros y hacer inferencia sobre cuantas semillas germinan en determinada plantación.
+
+#b)
+#Para estimar la proporción de residentes de una ciudad que usan carros ”alternativos” (el´ectricos, h´ıbridos o a gas natural), una persona registra el número de autos que pasan a través de cierta intersecci´on por un periodo de media hora.
+#Un total de 125 autos pasaron, donde 14 eran ”alternativos”.
+
+#1) Existen 125 intentos(ensayos) en los cuales la persona que está registrando el hecho puede encontrar cierto número de carros alternativos, en este caso. de 125 coches 14 eran alternativos, en 125 intentos de encontrar un alternativo, únicamente en 14 se registraron los requeridos. 
+#2)Existen dos posibles resultados, que el coche que pasa sea alternativo o no.
+#3)Los ensayos son independientes porque el coche que pasa en determinado momento no depende del que pasó antes o el que pasará después. Puede pasar uno y uno o una sucesión de alguno de ellos pero esto no está influenciado por los que pasaron momentos antes.
+#4) La probabilidad de encontrar un carro alternativo permanece constante porque cada intento es independiente de los demás y porque cada intento de encontrar un coche alternativo es identico cada vez.
+#5) La variable aleatoria de interés W es el número de coches alternativos que pasan en la intersección en un periodo de media hora,de el total de coches que pasan por la intersección.
+
+
+```
