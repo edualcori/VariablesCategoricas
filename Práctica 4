@@ -1,3 +1,13 @@
+---
+title: "Práctica4"
+author: "Francisco Eduardo ALvarez Coria"
+date: "22 de febrero de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 ##Ejercicio 2
 ```{r}
 #Considerese los experiemtnos para estimar pi para un problema en particular(pi es la probabilidad de éxito)
@@ -45,6 +55,10 @@ upper<-pi.hat + qnorm(p = 1-alpha/2) * sqrt(var.wald)
 round(data.frame(lower, upper), 4)
 paste("El intervalo inferior es: ",lower,"El intervalo superior es: ",upper)
 
+
+#Con un nivel de confianza del 95%,  la probabilidad de que una semila germine se ecnuentra entre un 64.39% y un 85.60%
+
+
 ```
 
 ## WALD EJERCICIO B
@@ -60,23 +74,26 @@ lower1<-pi.hat - qnorm(p = 1-alpha/2) * sqrt(var.wald)
 upper1<-pi.hat + qnorm(p = 1-alpha/2) * sqrt(var.wald)
 round(data.frame(lower1, upper1), 4)
 paste("El intervalo inferior es: ",lower1,"El intervalo superior es: ",upper1)
+
+
+
+
 ```
 
 ##WILSON EJERCICIO A
 ```{r}
 #Con respecto a los experimentos del punto anterior, encontrar los intervalos de Wald, Wilson y Agresti-Coull usando los datos dados. Interpretar los intervalos en el contexto de los experimentos.
 
-########################################################### WALD #############################################################
 #A)
 w<-48
 n<-64
 alpha<-0.05
-pi.hat<-w/n
-var.wald<-pi.hat*(1-pi.hat)/n
-lower<-pi.hat - qnorm(p = 1-alpha/2) * sqrt(var.wald)
-upper<-pi.hat + qnorm(p = 1-alpha/2) * sqrt(var.wald)
-round(data.frame(lower, upper), 4)
-paste("El intervalo inferior es: ",lower,"El intervalo superior es: ",upper)
+p.tilde<-(w + qnorm(p = 1-alpha/2)^2 /2) / (n + qnorm(p = 1-alpha/2)^2)
+p.tilde
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * sqrt(n) / (n+qnorm(p = 1-alpha/2)^2) *
+sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)),4)
+
 
 ```
 
@@ -87,12 +104,15 @@ paste("El intervalo inferior es: ",lower,"El intervalo superior es: ",upper)
 w<-14
 n<-125
 alpha<-0.05
-pi.hat<-w/n
-var.wald<-pi.hat*(1-pi.hat)/n
-lower1<-pi.hat - qnorm(p = 1-alpha/2) * sqrt(var.wald)
-upper1<-pi.hat + qnorm(p = 1-alpha/2) * sqrt(var.wald)
-round(data.frame(lower1, upper1), 4)
-paste("El intervalo inferior es: ",lower1,"El intervalo superior es: ",upper1)
+p.tilde<-(w + qnorm(p = 1-alpha/2)^2 /2) / (n + qnorm(p = 1-alpha/2)^2)
+p.tilde
+
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * sqrt(n) / (n+qnorm(p = 1-alpha/2)^2) *
+sqrt(pi.hat*(1-pi.hat) + qnorm(p = 1-alpha/2)^2/(4*n)),4)
+
+
+
+
 ```
 
 
@@ -100,17 +120,13 @@ paste("El intervalo inferior es: ",lower1,"El intervalo superior es: ",upper1)
 ```{r}
 #Con respecto a los experimentos del punto anterior, encontrar los intervalos de Wald, Wilson y Agresti-Coull usando los datos dados. Interpretar los intervalos en el contexto de los experimentos.
 
-########################################################### WALD #############################################################
+
 #A)
 w<-48
 n<-64
 alpha<-0.05
-pi.hat<-w/n
-var.wald<-pi.hat*(1-pi.hat)/n
-lower<-pi.hat - qnorm(p = 1-alpha/2) * sqrt(var.wald)
-upper<-pi.hat + qnorm(p = 1-alpha/2) * sqrt(var.wald)
-round(data.frame(lower, upper), 4)
-paste("El intervalo inferior es: ",lower,"El intervalo superior es: ",upper)
+var.ac<-p.tilde*(1-p.tilde) / (n+qnorm(p = 1-alpha/2)^2)
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * sqrt(var.ac),4)
 
 ```
 
@@ -121,12 +137,8 @@ paste("El intervalo inferior es: ",lower,"El intervalo superior es: ",upper)
 w<-14
 n<-125
 alpha<-0.05
-pi.hat<-w/n
-var.wald<-pi.hat*(1-pi.hat)/n
-lower1<-pi.hat - qnorm(p = 1-alpha/2) * sqrt(var.wald)
-upper1<-pi.hat + qnorm(p = 1-alpha/2) * sqrt(var.wald)
-round(data.frame(lower1, upper1), 4)
-paste("El intervalo inferior es: ",lower1,"El intervalo superior es: ",upper1)
+var.ac<-p.tilde*(1-p.tilde) / (n+qnorm(p = 1-alpha/2)^2)
+round(p.tilde + qnorm(p = c(alpha/2, 1-alpha/2)) * sqrt(var.ac),4)
 ```
 
 
