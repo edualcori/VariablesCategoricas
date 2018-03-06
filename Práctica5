@@ -1,0 +1,56 @@
+#1 Para los datos de los tiros libres de Larry Bird encontrar el riesgo relativo, la razón
+# de momios y los respectivos intervalos de confianza. Interpretar los resultados.
+c.table<-array(data = c(251,48,34,5),dim = c(2,2),dimnames = list(Primero=c("Éxito","Fracaso"),Segundo=c("Éxito","Fracaso")))
+c.table
+pi.hat.table<-c.table/rowSums(c.table)
+pi.hat.table
+pi.hat1<-pi.hat.table[1,1]
+pi.hat2<-pi.hat.table[2,1]
+pi.hat1
+pi.hat2
+
+######## EL RIESGO RELATIVO ES: #
+RR<-round(pi.hat1/pi.hat2,4)
+RR
+##### Intervalo de Wald para el riesgo relativo es: "
+#Int. Wald para el riesgo relativo
+alpha<-0.05
+n1<-sum(c.table[1,])
+n2<-sum(c.table[2,])
+var.log.rr<-1/c.table[1,1]-1/sum(c.table[1,])+1/c.table[2,1]-1/sum(c.table[2,])#es lo del radical, es la varianza del valor estimado
+ci<-exp(log((pi.hat1/pi.hat2)+ qnorm(p=c(alpha/2,1-alpha/2))*sqrt(var.log.rr)   ))
+round(ci,4)
+
+#si ahora exito=no polio solo tenemos que hacer 1/RR o bien 1/ci
+rev(round(1/ci,4))#Intervalo para el riesgo relativo donde el exito es no desarrollar polio , es decir la probabilidad de no desarrollar polio es 1.82 y 3.37 cuando se aplica vacuna 
+
+
+####################### La razón de momios ###############################################
+OR.hat<-(c.table[1,1]*c.table[2,2])/(c.table[2,1]*c.table[1,2])
+round(OR.hat,4)#los momios del grupo uno son solamente 40% los momios para el grupo 2 
+## si hacemos 1/OR.hat serian los momios pero se intercambiaron los papeles entre el grupo 1 y el grupo 2
+
+round(1/OR.hat,4)#los momios del grupo 1 son 2.48 veces los momios para el grupo 2 
+
+## constuyendo el intervalo de wald para la razón de momios 
+alpha<-0.05
+var.log.or<-1/c.table[1,1]+1/c.table[1,2]+1/c.table[2,2]+1/c.table[2,1]
+OR.CI<-exp(log(OR.hat)+ qnorm(p=c(alpha/2,1-alpha/2))*sqrt(var.log.or)     )
+round(OR.CI,4)#intervalo en terminos de desarrollae polio
+#pARA ESTE INTERVALO, EL 1 NO ESTÁ PRESENTE , si hay diferencia en los momios de desarrollar polio si se aplica vacuna o placebo
+
+## uno entre ese intervalo , da el intervalo enterminos de protección
+rev(round(1/OR.CI,4))#EN TERMINOS DE PROTECCION CONTRA EL POLIO, SI SE ADMINISTRA UNA VACUNA LA PROBABILIDAD DE NO DESARROLLAR POLIO ESTÁ ETRE 1.82 Y 3.38 VECES MÁS ALTO DE AQUELLOAS A LOS QUE SE LES APLICÓ VACUNA
+
+
+
+
+
+
+
+
+
+
+########################### EJERCICIO 2 ###################################################################################
+c.table<-array(data = c(22,10,4,6),dim = c(2,2),dimnames = list(Estrategia=c("Sin tiempo fuera","Tiempo Fuera"),GoldeCampo=c("Éxito","Fracaso")))
+c.table
