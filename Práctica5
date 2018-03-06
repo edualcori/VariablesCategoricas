@@ -29,11 +29,11 @@ RR
 alpha<-0.05
 n1<-sum(c.table[1,])
 n2<-sum(c.table[2,])
-var.log.rr<-1/c.table[1,1]-1/sum(c.table[1,])+1/c.table[2,1]-1/sum(c.table[2,])#es lo del radical, es la varianza del valor estimado
+var.log.rr<-1/c.table[1,1]-1/sum(c.table[1,])+1/c.table[2,1]-1/sum(c.table[2,])
 ci<-exp(log((pi.hat1/pi.hat2)+ qnorm(p=c(alpha/2,1-alpha/2))*sqrt(var.log.rr)   ))
 round(ci,4)
 
-rev(round(1/ci,4))
+#rev(round(1/ci,4))
 
 
 ####################### La razón de momios ###############################################
@@ -49,7 +49,7 @@ OR.CI<-exp(log(OR.hat)+ qnorm(p=c(alpha/2,1-alpha/2))*sqrt(var.log.or)     )
 round(OR.CI,4)
 
 ## uno entre ese intervalo , da el intervalo enterminos de protección
-rev(round(1/OR.CI,4))
+#rev(round(1/OR.CI,4))
 
 
 
@@ -90,6 +90,29 @@ pi.tilde1 - pi.tilde2 + qnorm(p = c(alpha/2, 1-alpha/2)) * sqrt(var.AC)
 
 #(b) Hacer una prueba score, ji-cuadrada de Pearson y una prueba LRT para la igual-
 #dad de éxito de las probabilidades.
+
+
+#### PRUEBA SCORE ###########
+pibarra<-(pi.hat1+pi.hat2)/(sum(c.table[1,])+sum(c.table[2,]))
+pibarra
+radi<-pibarra*(1-pibarra)*((1/sum(c.table[1,]))+ (1/ sum(c.table[2,])))
+score<-(pi.hat1-pi.hat2)/(sqrt(radi))
+
+
+
+################ PRUEBA CHI CUADRADA #####################
+w1<-c.table[1,1]
+w2<-c.table[2,1]
+n1<-sum(c.table[1,])
+n2<-sum(c.table[2,])
+
+
+chi<-((w1-(n1*pibarra))^2)/(n1*pibarra*(1-pibarra))+((w2-(n2*pibarra))^2)/(n2*pibarra*(1-pibarra))
+  
+
+######################### PRUEBA LRT #########################
+LRT<-(-2)*( w1*log(pibarra/pi.hat1) + (n1-w1)*log((1-pibarra) /(1-pi.hat1))+ w2*log(pibarra/pi.hat2) + (n2-w2)*log((1-pibarra) /(1-pi.hat2))         )
+
 
 
 #(c) Estimar el riesgo relativo y la razón de momios. Calcular los intervalos de con-
