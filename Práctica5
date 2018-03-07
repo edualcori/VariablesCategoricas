@@ -174,3 +174,12 @@ round(OR.CI,4)
 
 
 ```
+#Ejercicio 3
+#De acuerdo con Agresti, el ratio de momios es 0 o infinito si cuakquier nij es cero y es indefinido si ambas entradas en una fila o una columna son cero
+#por lo tanto el estimador se calcularía de la siguiente manera:
+θ˜ = (n11 + 0.5)(n22 + 0.5)/(n12 + 0.5)(n21 + 0.5)
+#Lo cual corresponde a añadir 1/2 a cada celda porque es preferible tener aunque sea una cantidad pequeña en cada 
+posición
+
+
+
