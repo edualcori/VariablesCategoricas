@@ -1,0 +1,44 @@
+################ SUPONIENDO QUE LAS VARIABLES DE LA TABLA DE CONTINGENCIA SON DEPENDIENTES(DATOS APAREADOS) #########################
+#Iplican a l mismo grupo de personas
+## x son filas y Y son columnas i son filas y j son columnas 
+########### Ejemplo de diagnostico de cancer
+
+c.table<-array(data=c(4,3,6,3),dim = c(2,2),dimnames = list(MRI=c("Localizado","Avanzado"),Ultrasonido=c("Localizado","Avanzado")))
+c.table
+n<-sum(c.table)
+pi.hat.table<-c.table/n
+pi.hat.table
+pi.hat.plus1<-sum(c.table[,1])/n
+pi.hat.1plus<-sum(c.table[1,])/n
+data.frame(pi.hat.plus1,pi.hat.1plus,diff=pi.hat.plus1-pi.hat.1plus)##El data frame va colocando por columnas
+######### Intervalos de confianza para la diferencia para p_+1 - p_1+ 
+library(PropCIs)
+install.packages("PropCIs")
+diffpropci.Wald.mp(b=c.table[1,2],c=c.table[2,1],n=sum(c.table),conf.level = 0.95)
+##samples estimates solo da el intervalos de maxma verosimilitud para esa diferencia 
+
+
+#### USANDO FORMULA SI EL COMANDO ANTERIOR NO CARGÓ
+
+alpha<-0.05
+var.hat<-1/n*(pi.hat.plus1*(1-pi.hat.plus1)+pi.hat.1plus*(1-pi.hat.1plus)-2*(pi.hat.table[1,1]*pi.hat.table[2,2]-pi.hat.table[1,2]*pi.hat.table[2,1]))
+
+round(pi.hat.1plus-pi.hat.1plus+qnorm(p=c(alpha/2,1-alpha/2))*sqrt(var.hat),4)
+
+###intervalo de agresti min
+diffpropci.mp(b=c.table[1,2],c=c.table[2,1],n=sum(c.table),conf.level = 0.95)
+
+
+
+
+##################### PRUEBA DEW MCNEMAR PARA LA DIFERENCIA ###
+mcnemar.test(x=c.table,correct = F)###el correct es para cuando tenemos una muestra pequeña 
+### vemos que el estadistico tiene un grado de libertad y p-value = 0.3173
+
+
+
+#### Sin utilizar libreria calcular McNemar
+M<-(c.table[2,1]-c.table[1,2])^2/(c.table[2,1]+c.table[1,2])
+M
+##calculando el p-value sin utilizar la paqueteria
+1-pchisq(q=M,df=1)## sale lo mismo que haciendolo directamente con la paqueteria 
