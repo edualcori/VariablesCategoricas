@@ -39,4 +39,34 @@ mod.fit2
 #  (Intercept)     distance       change  
 #       5.8932      -0.1129      -0.4478 
   #LA PROBABILIDAD DE EXITOS DE UN GOL DE CAMPO DECRECE SI AUMENTA LA DISTANCIA O SI HAY UN CAMBIO EN EL LIDEREO DE PUNTUACIÓN
-Summary(mod.fit)
+summary(mod.fit)
+
+
+
+
+################ OBTENIENDO VARIANZAS Y COVARIANZAS DEL MODELO
+temp<-summary(mod.fit)
+names(temp)
+
+temp$coefficients
+
+############ MATRIZ DE COVARIANZAS
+vcov(mod.fit)
+
+#varianza de beta1
+vcov(mod.fit)[2,2]
+
+########## maximizar una fucnion equivale a maximizar el logaritmo de la función en cuestión
+##función de , log-verosimilitud
+
+LogL<-function(beta,x,y) {
+  pi<-exp(beta[1]+beta[2]*x)/(1+exp(beta[1]+beta[2]*x))
+  sum(y*log(pi)+(1-y)*log(1-pi))
+  
+}
+
+LogL(beta = mod.fit$coefficients,x=placekick$distance,y=placekick$good)
+
+
+library(rgl)
+install.packages("rgl")
