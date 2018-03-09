@@ -1,0 +1,42 @@
+############# MODELOS DE REGRESIÓN #########################################################################################
+### modelos de regresión lineal
+## un modelo es saturado si hay tantos parámetros como observaciones 
+require(XLConnect)
+install.packages("XLConnect")
+setwd("C://Users//USUARIO//Documents")
+x11(width = 7,height = 6,pointsize = 12)
+
+curve(expr = x^2,xlim = c(-1,2),col="red",main="Gráfica de f(x)=x^2",xlab = "x",ylab = "f(x)", panel.first=grid(col="gray",lty = "dotted"))
+
+### Gráfica para un modelo de regresión logística
+par(mfrow=c(1,2))
+beta0<-1
+beta1<-0.5
+curve(expr =exp(beta0+beta1*x)/(1+exp(beta0+beta1*x)),xlim = c(-15,15),col="black",main=expression(pi==frac( e^{1+0.5*x[1]},1+e^{1+0.5*x[1]})),xlab=expression(x[1]),ylab=expression(pi)) #expression ayuda a poner simbolos
+
+curve(expr =exp(beta0-beta1*x)/(1+exp(beta0-beta1*x)),xlim = c(-15,15),col="black",main=expression(pi==frac( e^{1-0.5*x[1]},1+e^{1-0.5*x[1]})),xlab=expression(x[1]),ylab=expression(pi)) #expression ayuda a poner simbolos
+
+placekick<-read.table(file="Placekick.csv",header = T,sep = ",")### este archivo está centrado en goles de campo 
+tail(placekick)
+
+
+### estimando un modelo de regresión para los datos
+mod.fit<-glm(formula=good~ distance, family = binomial(link = logit),data = placekick)## glm es modelo lineal generalizado, lado izquierdo variable dependiente 
+mod.fit
+## cuando ponemos link=logit, simplemente establecemos que el logit(pi)=beta0+beta1x
+##intercept=beta0,distance=beta1, cuando el coeficiente de beta1 es negativo
+## la probabilidad de que un gol de campo sea exitoso va decreciendo conforme la distancia va aumentando (porque beta1=-0.115)
+
+names(mod.fit)
+class(mod.fit)
+
+
+######################### CUANDO HAY VARIAS VARIABLES INDEPENDIENTES#############
+mod.fit2<-glm(formula=good~ distance+change , family = binomial(link = logit),data = placekick)## glm es modelo lineal generalizado, lado izquierdo variable dependiente 
+mod.fit2
+#
+#Coefficients:
+#  (Intercept)     distance       change  
+#       5.8932      -0.1129      -0.4478 
+  #LA PROBABILIDAD DE EXITOS DE UN GOL DE CAMPO DECRECE SI AUMENTA LA DISTANCIA O SI HAY UN CAMBIO EN EL LIDEREO DE PUNTUACIÓN
+Summary(mod.fit)
