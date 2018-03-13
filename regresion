@@ -1,3 +1,4 @@
+
 ############# MODELOS DE REGRESIÓN #########################################################################################
 ### modelos de regresión lineal
 ## un modelo es saturado si hay tantos parámetros como observaciones 
@@ -29,16 +30,18 @@ mod.fit
 
 names(mod.fit)
 class(mod.fit)
+### funcion vcoc es la matriz de varianzas covarianzas
+vcov(mod.fit)
 
 
 ######################### CUANDO HAY VARIAS VARIABLES INDEPENDIENTES#############
 mod.fit2<-glm(formula=good~ distance+change , family = binomial(link = logit),data = placekick)## glm es modelo lineal generalizado, lado izquierdo variable dependiente 
-mod.fit2
+mod.fit2## se usa logit porque es un modelo de regresión logistica 
 #
 #Coefficients:
 #  (Intercept)     distance       change  
 #       5.8932      -0.1129      -0.4478 
-  #LA PROBABILIDAD DE EXITOS DE UN GOL DE CAMPO DECRECE SI AUMENTA LA DISTANCIA O SI HAY UN CAMBIO EN EL LIDEREO DE PUNTUACIÓN
+#LA PROBABILIDAD DE EXITOS DE UN GOL DE CAMPO DECRECE SI AUMENTA LA DISTANCIA O SI HAY UN CAMBIO EN EL LIDEREO DE PUNTUACIÓN
 summary(mod.fit)
 
 
@@ -57,16 +60,62 @@ vcov(mod.fit)
 vcov(mod.fit)[2,2]
 
 ########## maximizar una fucnion equivale a maximizar el logaritmo de la función en cuestión
-##función de , log-verosimilitud
+##función de , log-verosimilitud.### al maximizar la funcion de verosimilitud se obtienen los parámetros de la regresión 
 
-LogL<-function(beta,x,y) {
+logL<-function(beta,x,y) {
   pi<-exp(beta[1]+beta[2]*x)/(1+exp(beta[1]+beta[2]*x))
   sum(y*log(pi)+(1-y)*log(1-pi))
   
 }
 
 LogL(beta = mod.fit$coefficients,x=placekick$distance,y=placekick$good)
+### da -387.8725, se tiene que comparar si en realidad se maximicó el logaritmo de la función,se hace con lo siguiente
+logLik(mod.fit)### es el logaritmo de la función de verosimilitud 
 
 
+## daremos valores iniciales para poder ajustar un modelo con la función opptim , o sea optimizar los parámetros
+reg.mod<-lm(good~distance,placekick)#el acertar depende de la distancia?
+reg.mod$coefficients## valores iniciale spara empezar a optimizar
+
+mod.fit.optim<-optim(reg.mod$coefficients,logL,hessian = T,x = placekick$distance,Y= placekick$good,control = list(fnscale=-1),method = "BFGS")##optim por defecto minimiza la función y con el fnscale=-1 maximiza
+
+
+mod.fit.optim$par
+
+
+#Para hacer la gráfica 
+beta0.values<-seq(from = -5,to=18,by=0.1)
+beta1.values<-seq(from = -0.65,to=0.25,by=0.01)
+### para facilitar la graficación también
+
+
+count<-1
+save.logL<-numeric(length(beta0.values)*length(beta1.values))
+for(beta0 in beta0.values){
+for(beta1 in beta1.values){
+save.logL[count]<-logL(beta=c(beta0,beta1),x=placekick$distance,Y= placekick$good)
+count<-count+1
+  
+}  
+  
+}
+max(save.logL)  
 library(rgl)
-install.packages("rgl")
+open3d()
+
+
+
+
+
+# en el caso en que nuestros dstos no esten codificados con 0 1, vamos a demostrar que la foma de definir el modelo debe ser la misma solo midificando los datos
+
+#redefiniendo los datos en forma binomial
+##Proporción de éxitos para cada distancia
+w<-aggregate(good~distance,placekick,sum)# esto solo dice cuandtos numeros de exitos se obtuvieron para cada distanciua
+n<-aggregate(good~distance,placekick,length)
+w.n<-data.frame(distance=w$distance,success=w$good,trials=n$good,proportion=round(w$good/n$good,4))
+head(w.n)
+##haremos la comparación con el primero que hicimos
+
+mod.fit.bin<-glm(success/trials~distance,weights=trials,binomial(link=logit),w.n,trace=T)## cuando tenemos los datos en forma binomial debemos agregar el weights para que pondere bien 
+summary(mod.fit.bin)
