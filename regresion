@@ -119,3 +119,35 @@ head(w.n)
 
 mod.fit.bin<-glm(success/trials~distance,weights=trials,binomial(link=logit),w.n,trace=T)## cuando tenemos los datos en forma binomial debemos agregar el weights para que pondere bien 
 summary(mod.fit.bin)
+
+
+
+
+
+############################ PRUEBAS DE HIPOTESIS PARA LOS PARAMETROS DE REGRESIÓN###########################################
+#Esto sirve para saber si una variable es realmente importante para el modelo o no
+install.packages("car")
+library(car)
+
+### Ajustar un modelo que incluya la variable change y distance
+mod.fit2<-glm(good~change+distance,binomial(link = logit),placekick)
+round(summary(mod.fit2)$coefficients,4)#esto con el sumary da la prueba de WALD 
+#De manera alterna podemos usar la paqueteria car, funcion anova nos permitirá obtener la prueba de WALD
+Anova(mod.fit2,test.statistic = "Wald")
+
+
+# Para la prueba de LRT
+Anova(mod.fit2, test.statistic = "LR")
+## OTRA FORMA DE HACER LA LRT ES USAR ANOVA CON MINUSCUALS
+anova(mod.fit2,test = "Chisq")
+
+
+
+summary(mod.fit2)
+##### aqui se analiza ,b1 es change, z value es el estadictico de wald , el p value es el que dice si se acepta o rechaza la hipotesis nula, no siempre es 95% el valor de significancia 
+
+
+Anova(mod.fit2, test.statistic = "LR")
+## HIPOTESIS NULA BI=O ALTERNATIVA B1 DIFERENTE DE CERO
+#LR CHISQ)-2log(lambda), aqui da 5.246 con valor p o.022 , se rechaza la hipotesis nula, por tanto b1 si importa en el modelo y no valdrá 0 
+
