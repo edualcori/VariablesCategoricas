@@ -1,4 +1,3 @@
-
 ############# MODELOS DE REGRESIÓN #########################################################################################
 ### modelos de regresión lineal
 ## un modelo es saturado si hay tantos parámetros como observaciones 
@@ -92,11 +91,11 @@ beta1.values<-seq(from = -0.65,to=0.25,by=0.01)
 count<-1
 save.logL<-numeric(length(beta0.values)*length(beta1.values))
 for(beta0 in beta0.values){
-for(beta1 in beta1.values){
-save.logL[count]<-logL(beta=c(beta0,beta1),x=placekick$distance,Y= placekick$good)
-count<-count+1
-  
-}  
+  for(beta1 in beta1.values){
+    save.logL[count]<-logL(beta=c(beta0,beta1),x=placekick$distance,Y= placekick$good)
+    count<-count+1
+    
+  }  
   
 }
 max(save.logL)  
@@ -139,9 +138,16 @@ Anova(mod.fit2,test.statistic = "Wald")
 # Para la prueba de LRT
 Anova(mod.fit2, test.statistic = "LR")
 ## OTRA FORMA DE HACER LA LRT ES USAR ANOVA CON MINUSCUALS
-anova(mod.fit2,test = "Chisq")
-
-
+anova(mod.fit2,test = "Chisq")## para comparar dos modelos, dos ajustes 
+## como pr(>chi) se rechaza la nula que es decir que se acepta la alternativa, o sea la cariable distancia es de importancia 
+# con la columna de la variable distance se dice que como p value tambien es menor a 0.5 las dos variables son de importancia 
+Df Deviance Resid. Df Resid. Dev  Pr(>Chi)    
+#NULL                      1424    1013.43              
+#change    1   24.277      1423     989.15 8.343e-07 ***  Ho=b0 y H1=Bo+B1change
+#  distance  1  218.650      1422     770.50 < 2.2e-16 ***Ho=b0+B1change y H1=Bo+B1change+b2Distance
+#  ---
+#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#> 
 
 summary(mod.fit2)
 ##### aqui se analiza ,b1 es change, z value es el estadictico de wald , el p value es el que dice si se acepta o rechaza la hipotesis nula, no siempre es 95% el valor de significancia 
@@ -150,4 +156,40 @@ summary(mod.fit2)
 Anova(mod.fit2, test.statistic = "LR")
 ## HIPOTESIS NULA BI=O ALTERNATIVA B1 DIFERENTE DE CERO
 #LR CHISQ)-2log(lambda), aqui da 5.246 con valor p o.022 , se rechaza la hipotesis nula, por tanto b1 si importa en el modelo y no valdrá 0 
+
+
+
+#si ahora queremos
+
+#Ho=b0+B1distance y H1=Bo+B1change+b2Distance
+
+mod.fit.Ho<-glm(good~distance,family = binomial(link = logit),placekick )
+anova(mod.fit.Ho,mod.fit2,test = "Chisq")
+
+
+
+
+
+## si queremos #Ho=b0 H1=Bo+B1change
+mod.fit.Ho<-glm(good~1,family = binomial(link = logit),placekick )
+mod.fit.Ha<-glm(good~change,family = binomial(link = logit),placekick )
+anova(mod.fit.Ho,mod.fit.Ha,test = "Chisq")
+
+
+pi.hat.Ho<-mod.fit.Ho$fitted.values
+pi.hat.Ha<-mod.fit.Ha$fitted.values
+y<-placekick$good
+### para sacar el -2log
+stat<--2*sum(y*log(pi.hat.Ho/pi.hat.Ha)+(1-y)*log((1-pi.hat.Ho)/(1-pi.hat.Ha)))##-2log(lambda)
+pvalues<-1-pchisq(q=stat,df=1)
+data.frame(stat,pvalues)
+
+
+#B1 gorro se saca del glm y despues $fitted o $coefficients
+
+
+###################### 
+
+
+
 
