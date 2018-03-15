@@ -1,0 +1,83 @@
+################################# estimados de los momios##############################
+mod.fit$coefficients[2]
+exp(mod.fit$coefficients[2])## exp(cB1)=exp(1*b1)### es la razón de momios de tomar un incremento de c en la variable x 
+##0.8913424   es decir que ante un aumento de una yarda en la distancia , la probabilidad de anotar un gol no aumenta, sino que es .8913
+## la probabilidad de anotar disminuye en casi 10% si aumentamos una yarda la distancia 
+exp(-10*mod.fit$coefficients[2])
+#3.159035  si disminuimos la distancia del gol de campo en 10 yardas los momios aumentan, es decir la probabilidad de gol aumenta en 3.15 veces 
+## el estimado de los momios de exits de un gol de campo aumenta en 3.16 veces por cada 10 yardas que reduzcamos la distancoia 
+
+
+######################## intervalos de confianza para los estimados de los momos
+beta.ci<-confint.default(mod.fit,parm = "distance",level = 0.95)## el default es el de wald, parm es para decir rwspecto a que variable queremos el intervalo
+beta.ci
+
+### pero para el intervalo de la razón de momios necesitamos el exponencial
+exp(beta.ci)
+## cuando incrementamos la distancia en una yarda la razón de momios disminuye entre 13% y 10%, esto es para una yarda
+
+####### si aumentamos la distancia en 10 yardas
+exp(10*beta.ci)
+## sia umentamos la distancia en 10 yardas la probabilidad de gol disminuye entre 73% y 63%
+
+######## si ahora disminuimos la distancia en 10 yardas
+  exp(-10*beta.ci)
+#si disminuimos la distancia en 10 yardas  la probabilidad de gol aumenta entre 2.68 y 3.72 veces
+as.numeric(rev(round(exp(-10*beta.ci),2)))## esto solo es porque al multiplicar por un menos da los limites invertidos 
+
+
+
+mod.fit
+################ intervalo de confianza para LR
+beta.ci<-confint(mod.fit,parm = "distance",0.95)
+beta.ci ## para una yarda
+
+## para disminucion de 10 yardas
+as.numeric(rev(round(exp(-10*beta.ci),2)))
+#si disminuimos la distancia en 10 yardas  la probabilidad de gol aumenta entre 2.69 y 3.74 veces
+
+
+install.packages("mcprofile")## para manera alterna de calcular el intervalo perfil de verosimilitud
+require(mcprofile)
+K<-matrix(data = c(0,1),nrow = 1,ncol = 2,byrow = T)
+linear.combo<-mcprofile(object = mod.fit,CM=K)
+ci.log.OR<-confint(object = linear.combo,level=0.95,adjust="none")
+names(ci.log.OR)
+exp(-10*ci.log.OR$confint)
+
+
+
+
+########### una vez habiendo ajustado modelos la probabilidad de exito se saca de despejar pi de logit de pi
+
+#####Estimación de la probabilidad de éxito 
+#pi.hat para una distancia de 20 yardas 
+linear.pred<-mod.fit$coefficients[1]+mod.fit$coefficients[2]*20
+linear.pred## este es en realidad el logit(pi)=Bo+B1x
+
+exp(linear.pred)/(1+exp(linear.pred))
+## a una distancia de 20 metros hay una pribabilidad de 97.10% de éxito de anotar
+
+
+### comparando con otro proceso esta misma probabilidad
+predict.data<-data.frame(distance=20)
+predict(object = mod.fit,newdata = predict.data,type = "link")# da el logit 
+predict(object = mod.fit,newdata = predict.data,type = "response")## da la probabilidad
+
+
+
+head(placekick$distance==20)
+
+### aunque la probabilidad de exito tambien se puede sacar de los valores ajustados 
+mod.fit$fitted.values[3]
+
+
+############# intervalo de wald
+
+alpha<-0.05
+linear.pred<-predict(object = mod.fit,newdata = predict.data,type = "link",se=TRUE)
+linear.pred
+pi.hat<-exp(linear.pred$fit)/(1+exp(linear.pred$fit))
+CI.lin.pred<-linear.pred$fit+qnorm(p=c(alpha/2,1-alpha/2))*linear.pred$se
+CI.pi<-exp(CI.lin.pred)/(1+exp(CI.lin.pred))
+CI.pi
