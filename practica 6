@@ -1,0 +1,118 @@
+---
+title: "Práctica6"
+author: "Francisco Eduardo Alvarez Coria"
+date: "16 de marzo de 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+install.packages("mgcv")
+require(mgcv)
+```
+
+
+
+
+a)Ajustar un modelo de regresión logística
+
+
+```{r}
+setwd("C://Users//USUARIO//Documents//aNALISISVARIABLESCATEGORICAS")
+challenger<-read.table(file="challenger.csv",header = TRUE, sep = ",")
+###### a todos aquellos valores de la variable O.Ring =2 se les cambiará por el valor 1
+challenger[14,4]<-1
+challenger[21,4]<-1
+
+mod.fit<-glm(formula = O.ring ~ Temp+Pressure, data = challenger)
+mod.fit 
+beta_0.hat <- mod.fit$coefficients[1]
+beta_1.hat <- mod.fit$coefficients[2]
+beta_2.hat<-mod.fit$coefficients[3]
+
+```
+
+
+b)Realizar LRTs para determinar la importancia de las variables independientes
+en el modelo.
+```{r}
+install.packages("car")
+library(car)
+
+### Para esta prueba utilizaremos la paqueteria car para poder requerir la pruea ANOVA 
+
+Anova(mod.fit, test.statistic = "LR")
+
+##De acuerdo con la prueba anterior, para la variable temperatura se tiene un p-value de  0.00361, por lo tanto para un nivel de significancia de .001 podemos decir que rechazamos la hipotesis nula, por lo tanto, la variable temperatura es de importancia para el modelo  
+##Para el caso de la variable Pressure, su valor p es de 0.08930, por lo tanto,para cualquier nivel de significancia, se acepta la hip´rtesis nula, es decir, que esta variable no es de importancia para el modelo.
+
+```
+
+
+c) En su artículo, los autores removieron la variable Pressure. Con base en los re-
+sultados del inciso anterior, explicar por que pudo haberse tomado esta decision.
+
+```{r}
+#Porque de acuerdo con pruebas estadisticas la variable de presión no influye en el hecho de que una junta teórica falle , es decir esta variable de ninguna manera incide en el "éxito" de la situación que requerimos En particular para las pruebas realizadas en este ejercicio, en una prueba de máxima verosimilitud, no existe suficiente evidencia estadística para rechazar la hipótesis nula que en este caso se refiere a si la variable es de importancia para el modelo, por lo tanto la falla de una junta teorica no depende de la presión.
+
+```
+
+
+
+d)Ajustar el modelo que solo considera a Temp como variable independiente.
+
+```{r}
+
+
+mod.fit1<-glm(formula = O.ring ~ Temp, data = challenger)
+mod.fit1 
+
+## Los datos son ajustados al siguiente modelo O.Ring=3.69841-0.04754Temp
+```
+
+
+
+
+
+
+
+
+
+(e) Construir dos graficas, (1) pi contra Temp y (2) Numero esperado de fallas contra
+Temp.Usese un rango de temperatura de 31 grados a 81grados.
+
+```{r}
+### temperatura contra pi
+
+pi.hat<-(exp(mod.fit1$coefficients[1]+mod.fit1$coefficients[2]*challenger$Temp))/(1+exp(mod.fit1$coefficients[1]+mod.fit1$coefficients[2]*challenger$Temp))
+  
+plot(challenger$Temp,pi.hat,xlim = c(31,81),xlab = "Temperatura",ylab = "Probabilidad",main = "Temperatura VS probabilidad")
+
+
+pi.hat.esp<-23*pi.hat
+plot(challenger$Temp,pi.hat.esp,xlim = c(31,81),xlab = "Temperatura",ylab = "Probabilidad",main = "Temperatura VS probabilidad")
+```
+
+(f) Incluir las bandas del intervalo de Wald del 95% para pi en la grafica.
+
+```{r}
+
+
+alpha<-0.05
+linear.pred<-predict(object = mod.fit1, newdata = predict.data, type = "link", se = TRUE)
+linear.pred
+pi.hat<-exp(linear.pred$fit)/(1+exp(linear.pred$fit))
+CI.lin.pred<-linear.pred$fit + qnorm(p = c(alpha/2, 1-alpha/2))*linear.pred$se
+CI.pi<-exp(CI.lin.pred)/(1+exp(CI.lin.pred))
+CI.pi
+round(data.frame(predict.data, pi.hat, lower = CI.pi[1], upper = CI.pi[2]),4)
+
+
+
+
+```
+
+
+(g) Cuando ocurrio el accidente del Challenger en 1986 la temperatura era de 31 grados.
+Estimar la probabilidad de fallo en una junta torica con esta temperatura. Calcular el intervalo de confianza correspondiente.
