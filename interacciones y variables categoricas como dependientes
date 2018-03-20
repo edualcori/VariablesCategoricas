@@ -1,0 +1,80 @@
+
+
+################################################# INTERACCIONES ###############################################################
+## EN EL PREDICTOR LINEAL BO+B1XI+B2X2 HAY TERMINOS DE MAYOR GRADO A UNO O EN GENERAL TERMINOS QUE YA NO SON LINEALES
+### para ello vamos a comparar dos predictores lineales en el a4rchivo de gol de campo
+#good~distance+wind
+#good~distance+wind+distance*wind
+
+
+
+
+getwd()
+setwd("C://Users//USUARIO//Documents//Variables Categoricas")
+challenger<-read.table("TomatoVirus.csv",header = T,sep = ",")
+placekick<-read.table("Placekick.csv",header = T,sep = ",")
+mod.fit.Ho<-glm(good~distance+wind,binomial(link = logit),placekick)
+mod.fit.Ha<-glm(good~distance+wind+distance:wind,binomial(link = logit),placekick)
+summary(mod.fit.Ha)## el modelo para este quedsria logit(pi)=5.684+.110distance+2.469wind-.83distance*wind
+### se rechaza la hipotesis nula si el valor p es menor al calor de significancia 
+
+###para comparar dos modelos
+anova(mod.fit.Ho,mod.fit.Ha,test = "Chisq")## prueba LTR
+## como cumple las condiciones del p value se dice que hay interaccion entre distancia y viento 
+
+
+#Razon de momios para viento a una distancia especifica
+
+beta.hat<-mod.fit.Ha$coefficients[2:4]## excluyendo el termino independiente 
+beta.hat
+c<-1
+distance<-seq(20,60,by=10)
+### entonces la odds ratip ára cara una de estas distancias recordando que hay una interaccio
+
+OR.wind<-exp(c*(beta.hat[2]+beta.hat[3]*distance))## OR estimado
+cov.mat<-vcov(mod.fit.Ha)[2:4,2:4]### matriz de covarianza para beta^_1,beta^_2,beta^_1(no es exponenciacion sino subindices)
+var.log.OR<-cov.mat[2,2]+distance^2*cov.mat[3,3]+2*distance*cov.mat[2,3]##var(beta^_2+distance*beta^_3)
+ci.log.OR.low<-c*(beta.hat[2]+beta.hat[3]*distance)-c*qnorm(p=0.975)*sqrt(var.log.OR)
+ci.log.OR.up<-c*(beta.hat[2]+beta.hat[3]*distance)+c*qnorm(p=0.975)*sqrt(var.log.OR)
+
+data.frame(OR.wind,OR.low=exp(ci.log.OR.low),OR.up=exp(ci.log.OR.up))
+## PARA UNA DISTANCIA DE 20 YARDAS ANTE UN INCREMENTO DE UNA YARDA LA RAZON DE MOMIOS ES 2.2150 es decir la probabilidad de ser influenciada por el viento en 2.21
+### las interpretaciones son respecto a la interaccion del viento con la distancia ejemplo para 3o yardas , como el 1 esta presente en el intervalo se puede pensar que igual y el viento NO ejerce presion sobre el hecho de anotar un gol o no 
+##conforme avanza la distancia el viento interactua más 
+### esta tabla es que pasa con la razon de momios si aumentamos una yarda (por el c que definimos antes)
+#si hacemos el inverso seria la razon de momios si disminuimos la distancia en una yarda 
+#### 
+
+############### para hacer modelos en los que las variables independientes sean categoricas con una o mas categorias 
+##supongamos una variable categórica con q niveles 
+
+### con la BD tomato 
+tomato<-read.csv("TomatoVirus.csv")
+View(tomato)
+### en este caso no queremos tener virus en la splantas de tomate 
+### de la base las variables, infest es variable categorica con dos niveles, infest=el metodo de infeccion fue poner plantas ya infectadas. 2 metodo de infeccion es poner insectos infectados 
+#control=tres niveles , c es control del virus con un elemento  tipo quimico,B control biológico,N ningún control
+#plants: numero de plantas sin infeccion que se pusieron al inicio
+#virus8: de las 100 que se pusieron cuantas se infectaron después de 8 semanas 
+
+para saber si tenemos vqariables categoricas en nuestra base(factor)
+class(tomato$Control)
+## para saber sus niveles
+levels(tomato$Control)
+## para los indicadores de la variable
+contrasts(tomato$Control)
+
+
+
+### la variable infest en realidad es una variable categorica pero R lo está tomando como entero , lo deberiamos cambiar con el comando as.factor()
+#as.factor(tomato$Infest)
+# o redefinir la columna en cuestión
+tomato$Infest<-factor(tomato$Infest)
+class(tomato$Infest)
+levels(tomato$Infest)
+
+mod.fit<-glm(Virus8/Plants~Infest+Control,family=binomial(link = logit),tomato,weights = Plants)## aqui la variable depéndiente es division porque queremos ver la proporcion de exitos en un numero total de casos 
+summary(mod.fit)
+### dice ejemplo infest2 por el nivel, porque infest tiene dos niveles por tanto un indicador
+### ejempplo, como el coeficiente 2 es positivo la probabilidad de infeccion crece en .2196 cuando se utiliza metodo de infección 2
+## controlN cuando no se aplica control la probabilidad de infección aumenta en .5152
