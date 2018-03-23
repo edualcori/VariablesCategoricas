@@ -1,0 +1,88 @@
+
+
+
+
+
+
+
+
+
+
+
+############### para hacer modelos en los que las variables independientes sean categoricas con una o mas categorias 
+##supongamos una variable categórica con q niveles 
+
+### con la BD tomato 
+tomato<-read.csv("TomatoVirus.csv")
+View(tomato)
+### en este caso no queremos tener virus en la splantas de tomate 
+### de la base las variables, infest es variable categorica con dos niveles, infest=1 el metodo de infeccion fue poner plantas ya infectadas. 2 metodo de infeccion es poner insectos infectados 
+#control=tres niveles , c es control del virus con un elemento  tipo quimico,B control biológico,N ningún control
+#plants: numero de plantas sin infeccion que se pusieron al inicio
+#virus8: de las 100 que se pusieron cuantas se infectaron después de 8 semanas 
+
+#para saber si tenemos vqariables categoricas en nuestra base(factor)
+class(tomato$Control)
+## para saber sus niveles
+levels(tomato$Control)
+## para los indicadores de la variable
+contrasts(tomato$Control)
+#### si una variable no estuviera reconocida como ctaegórica usar factor
+
+
+### la variable infest en realidad es una variable categorica pero R lo está tomando como entero , lo deberiamos cambiar con el comando as.factor()
+#as.factor(tomato$Infest)
+# o redefinir la columna en cuestión
+tomato$Infest<-factor(tomato$Infest)
+class(tomato$Infest)
+levels(tomato$Infest)
+
+###los objetos temp son unicamente para temp(ordenar o poner como base el factor c, luego b, luego el n, que no los ponga en orden alfabético)
+
+mod.fit<-glm(Virus8/Plants~Infest+Control,family=binomial(link = logit),tomato,weights = Plants)## aqui la variable depéndiente es division porque queremos ver la proporcion de exitos en un numero total de casos 
+summary(mod.fit)
+### dice ejemplo infest2 por el nivel, porque infest tiene dos niveles por tanto un indicador
+### ejempplo, como el coeficiente 2 es positivo la probabilidad de infeccion crece en .2196 cuando se utiliza metodo de infección 2
+## controlN cuando no se aplica control la probabilidad de infección aumenta en .5152
+##controlc=la probabilidad de que una planta sana desarrole sintomas al haber utilizado control quimico decrece en .7933
+
+
+##########ahora vamos a permitir interacciones
+#####estimacion de un modelo que permite interacciones 
+mod.fit.inter<-glm(Virus8/Plants~Infest+Control+ Infest:Control,family=binomial(link = logit),tomato,weights = Plants)##
+##vamos a permitir interaccion entre metodo de infeccion y control 
+mod.fit.inter$coefficients
+##
+
+#comparando dos modelos para aceptar o rechazar hipotesis nulas
+Anova(mod.fit.inter)## estamos comparando un modelo que permite interacciones contra uno que no 
+## vemos que el valor de la interaccion es 4.434e-07, se rechaza la hipotesis nula, es decir hay al menos una interaccion, es decir el metodo de control puede afectar a l metodo de infeccion o viceversa 
+
+
+
+
+### intervalos de confianza para razon de momios 
+## odds paera el modelo que no permite interacciones
+exp(mod.fit$coefficients[2])## artio para la variable infest
+## esto da la proba de que se infecte por el metodo 2 respecto al metodo de infeccion 1
+## 1.2456 la probabiidad de infeccion por el metodo 2 es .24 veces mas alta que si usamos metodo de infeccion 1
+##metodo de infeccion 1 respecto al metodo de infeccion 2
+1/exp(mod.fit$coefficients[2])
+#### .8028141 la probabilidad de infeccion usando metodo 1 decrece respecto al uso del metodo 2 
+
+### interavlo de wald para el modelo sin interacciones
+exp(confint.default(object = mod.fit,parm = "Infest2",level = 0.95))
+### con un 95% de confianza los momios no son iguales porque el 1 no está contenido 
+
+
+### sin permitir interacciones , la razon de momios para los controles
+exp(mod.fit$coefficients[3:4])## posicion 1 es termino independiente, 2 es metodo de infeccion y 3 y 4 metodos de control
+exp(confint.default(object = mod.fit,parm = c("ControlC","ControlN"),level = 0.95))## CI de control c respecto a ningun control
+#### cuando usamos un control quimico los momios de que una planta se infecte decrece, ambos son menores a 1
+# si no usamos control la probabilidad de infección crece entre un 29% y116%
+
+
+#####
+#para comparar momios momionunguncontrol/momiocontrolquimico
+beta.hat<-mod.fit$coefficients[-1]
+exp(beta.hat[3]-beta.hat[2])
