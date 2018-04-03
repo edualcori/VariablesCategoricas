@@ -30,27 +30,30 @@ Anova(mod.fit1)
 
 #d) Calcular las 6 posibles razones de momios para Weather y determinar los respectivos intervalos de confianza para cada una. ¿Se puede encontrar el valor 1 en alguno de estos intervalos? Relacionar con la LRT para Weather realizada en c)
 
+http://www.redalyc.org/pdf/402/40211121.pdf
 summary(mod.fit1)
 beta.hat<-mod.fit1$coefficients[2:11]
+exp(mod.fit1$coefficients[2:11])
 ##weather INSIDE
-uno<-exp(beta.hat[2]/(1-beta.hat[2]))
+uno<-exp(beta.hat[2])
 uno
 1/uno
 
-cov.mat<-vcov(mod.fit1)[2:11,2:11]### matriz de covarianza para beta^_1,beta^_2,beta^_1(no es exponenciacion sino subindices)
-var.log.OR1<-cov.mat[2,2]
-ci.log.OR.low1<-beta.hat[2]-qnorm(p=0.95)*sqrt(var.log.OR1)
-ci.log.OR.up1<-beta.hat[2]+qnorm(p=0.95)*sqrt(var.log.OR1)
+
+
+exp(confint.default(object = mod.fit1, parm = "WeatherInside", level = 0.95))
+exp(confint.default(object = mod.fit1, parm = "WeatherSnowRain", level = 0.95))
+exp(confint.default(object = mod.fit1, parm = "WeatherSun", level = 0.95))
 
 ##Weather SNOWRAIN
-dos<-exp(beta.hat[3]/(1-beta.hat[3]))
+dos<-exp(beta.hat[3])
 1/dos
 
 var.log.OR2<-cov.mat[3,3]
 ci.log.OR.low2<-beta.hat[3]-qnorm(p=0.95)*sqrt(var.log.OR2)
 ci.log.OR.up2<-beta.hat[3]+qnorm(p=0.95)*sqrt(var.log.OR2)
 ##Weather SUN
-tres<-exp(beta.hat[4]/(1-beta.hat[4]))
+tres<-exp(beta.hat[4])
 1/tres
 var.log.OR3<-cov.mat[4,4]
 ci.log.OR.low3<-beta.hat[4]-qnorm(p=0.95)*sqrt(var.log.OR3)
@@ -68,5 +71,6 @@ ci.log.OR.up3<-beta.hat[4]+qnorm(p=0.95)*sqrt(var.log.OR3)
 #ii) ¿Existe evidencia para concluir que enfriar al patedor es una buena estrategia?
 
 #f) Calcular un modelo que considere las variables independientes Distance, Wind15, así como la interacción Distance x Wind15
+mod.fit1.inter<-glm(Good~Distance+Wind15+Distance:Wind15,binomial(link = logit),place)
 
 #g) Graficar el modelo del inciso f)
