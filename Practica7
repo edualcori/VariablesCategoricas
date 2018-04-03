@@ -1,5 +1,5 @@
 getwd()
-setwd("C://Users//Sala-C19//Documents//vARIABLES Categoricas")
+setwd("C://Users//8//Documents//DECIMO//Análisis de Variables Categóricas")
 
 place<-read.table("placekick.BW.csv",header = T,sep = ",")
 
@@ -7,7 +7,6 @@ place<-read.table("placekick.BW.csv",header = T,sep = ",")
 
 mod.fit<-glm(Good~Distance,binomial(link = logit),place)
 mod.fit$coefficients
-## la gráfica de github y regresion
 curve(expr =exp(mod.fit$coefficients[1]+mod.fit$coefficients[2]*x)/(1+exp(mod.fit$coefficients[1]+mod.fit$coefficients[2]*x)),xlim = c(-15,15),col="black",main=expression(pi==frac( e^{bo+b1*x[1]},1+e^{b0+b1*x[1]})),xlab=expression(x[1]),ylab=expression(pi))
 
 
@@ -30,47 +29,69 @@ Anova(mod.fit1)
 
 #d) Calcular las 6 posibles razones de momios para Weather y determinar los respectivos intervalos de confianza para cada una. ¿Se puede encontrar el valor 1 en alguno de estos intervalos? Relacionar con la LRT para Weather realizada en c)
 
-http://www.redalyc.org/pdf/402/40211121.pdf
 summary(mod.fit1)
 beta.hat<-mod.fit1$coefficients[2:11]
+beta.hat
 exp(mod.fit1$coefficients[2:11])
 ##weather INSIDE
 uno<-exp(beta.hat[2])
 uno
 1/uno
 
-
-
-exp(confint.default(object = mod.fit1, parm = "WeatherInside", level = 0.95))
-exp(confint.default(object = mod.fit1, parm = "WeatherSnowRain", level = 0.95))
-exp(confint.default(object = mod.fit1, parm = "WeatherSun", level = 0.95))
+confuno<-exp(confint.default(object = mod.fit1, parm = "WeatherInside", level = 0.95))
 
 ##Weather SNOWRAIN
 dos<-exp(beta.hat[3])
 1/dos
 
-var.log.OR2<-cov.mat[3,3]
-ci.log.OR.low2<-beta.hat[3]-qnorm(p=0.95)*sqrt(var.log.OR2)
-ci.log.OR.up2<-beta.hat[3]+qnorm(p=0.95)*sqrt(var.log.OR2)
+confdos<-exp(confint.default(object = mod.fit1, parm = "WeatherSnowRain", level = 0.95))
+
 ##Weather SUN
 tres<-exp(beta.hat[4])
 1/tres
-var.log.OR3<-cov.mat[4,4]
-ci.log.OR.low3<-beta.hat[4]-qnorm(p=0.95)*sqrt(var.log.OR3)
-ci.log.OR.up3<-beta.hat[4]+qnorm(p=0.95)*sqrt(var.log.OR3)
-
-
-
+conftres<-exp(confint.default(object = mod.fit1, parm = "WeatherSun", level = 0.95))
+conftres
 
 
 
 #e) El 12 de diciembre de 2011, los vaqueros de Dallas en su partido contra los cardenales de Arizona, estando empatados y con 7 segundos en el reloj, intentaron (por medio del pateador Dan Bailey) un gol de campo de 49 yardas que fue exitoso. Por desgracia, el entrenador de los vaqueros había pedido tiempo fuera antes de la ejecución, por lo que Bailey tuvo que repetir la patada. En el segundo intento se falló: el entrenador de los vaqueros “enfrió” a su propio pateador
 
+##calcular la probabilidad de exito para una distancia de 49 yardas sin ice(Ice=0) y después la probabilidad de fallo(1-exito) de gol con ice=1 
+linear.pred<-mod.fit1$coefficients[1] + (mod.fit1$coefficients[2]*49)+mod.fit1$coefficients[11]
+linear.pred
+1-(exp(linear.pred)/(1+exp(linear.pred)))## La probabilidad de fallar a 49 yardas con tiempo pedido es .6239(exito=.3760)
+
+linear.pred<-mod.fit1$coefficients[1] + (mod.fit1$coefficients[2]*49)
+linear.pred
+exp(linear.pred)/(1+exp(linear.pred)) #La probabilidad de éxito sin tiempo extra fue de .5914 por tanto el entrenador si enfrió a su propio pateador.
+
 #i) Tomese Distance= 49, Wind=0 , Grass=1, Pressure=Y y Ice=1. Supóngase que Weather=”Sun” y Temperature=”Nice”. Calcular el estimado de la probabilidad de que el gol de campo sea exitoso.
+
+predict.data<-data.frame(Distance = 49, Wind15=0,Grass=1,Pressure="Y",Ice=1,Weather="Sun",Temperature="Nice")
+predict.data
+
+linear.pred<-predict(object = mod.fit1, newdata = predict.data, type = "link", se = TRUE)
+linear.pred
+exp(linear.pred$fit)/(1+exp(linear.pred$fit))## La probabilidad de exito bajo esas condiciones es .3595
+
 
 #ii) ¿Existe evidencia para concluir que enfriar al patedor es una buena estrategia?
 
+predict.data<-data.frame(Distance = 49, Wind15=0,Grass=1,Pressure="Y",Ice=0,Weather="Sun",Temperature="Nice")
+predict.data
+
+linear.pred<-predict(object = mod.fit1, newdata = predict.data, type = "link", se = TRUE)
+linear.pred
+exp(linear.pred$fit)/(1+exp(linear.pred$fit))## La probabilidad de exito bajo esas condiciones es .3595
+#La probabilidad de anotar un gol cuando no se enfria al pateador es de .5741 ,por lo tanto el que no se pida un tiempo fuera antes del tiro aumenta la probabilidad
+#de tener un exito en cuestión de gol
+
 #f) Calcular un modelo que considere las variables independientes Distance, Wind15, así como la interacción Distance x Wind15
 mod.fit1.inter<-glm(Good~Distance+Wind15+Distance:Wind15,binomial(link = logit),place)
-
+mod.fit1.inter$coefficients[1]
 #g) Graficar el modelo del inciso f)
+curve(expr =exp(mod.fit1.inter$coefficients[1]+mod.fit1.inter$coefficients[2]*x+mod.fit1.inter$coefficients[3]*x+mod.fit1.inter$coefficients[4]*x*x)/(1+exp(  mod.fit1.inter$coefficients[1]+mod.fit1.inter$coefficients[2]*x+mod.fit1.inter$coefficients[3]*x+mod.fit1.inter$coefficients[4]*x*x        )),xlim = c(-15,15),col="black",main=expression(pi==frac( e^{bo+b1*x[1]},1+e^{b0+b1*x[1]})),xlab=expression(x[1]),ylab=expression(pi))
+
+x11()
+par(mfrow=c(2,1))
+
