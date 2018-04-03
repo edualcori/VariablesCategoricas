@@ -1,0 +1,58 @@
+getwd()
+setwd("C://Users//USUARIO//Documents//Variables Categoricas")
+place<-read.table("placekick.BW.csv",header = T,sep = ",")
+
+#a) Estimar un modelo usando la función “glm( )” y la fórmula Good ~ Distance, graficar usando “curve( )”
+
+mod.fit<-glm(Good~Distance,binomial(link = logit),place)
+## la gráfica de github y regresion
+
+#b) Estimar un modelo (sin interacciones) que utilice las variables independientes Distance, Weather, Wind15, Temperature, Grass, Pressure y Ice.
+mod.fit1<-glm(Good~Distance+Weather+Wind15+Temperature+Grass+Pressure+Ice,binomial(link = logit),place)
+#c) Realizar LRTs para todas las variables independientes para determinar su importancia en el modelo. Describir los resultados
+
+Anova(mod.fit1)
+# si el valor p es menor a .05 se rechaza la hipotesis nula H0=el coeficiente de dicha variable es 0, Ha=el coeficiente no es cero
+## Para un nivel de confianza del 95% vemos que 
+## Distancia , el valor es 2e-16, como es menor a .05 se rechaza la hipotesis nula y por tanto vemos que la distancia es de importancia para el modelo
+## Weather, no es de importancia
+##Wind15, no es de importancia
+##Temperature, no es de importancia
+##Grass como se rechaza la hipótesis nula , el césped es de importancia para el modelo
+##Pressure, no es de importancia
+##Ice, no es de importancia
+
+
+#d) Calcular las 6 posibles razones de momios para Weather y determinar los respectivos intervalos de confianza para cada una. ¿Se puede encontrar el valor 1 en alguno de estos intervalos? Relacionar con la LRT para Weather realizada en c)
+
+http://www.redalyc.org/pdf/402/40211121.pdf
+##weather/Distance
+
+
+##Weather/Wind15
+
+##Weather/temperature
+
+##Weather/Grass
+
+##Weather/Pressure
+
+##Weather/Ice
+
+
+
+
+
+#e) El 12 de diciembre de 2011, los vaqueros de Dallas en su partido contra los cardenales de Arizona, estando empatados y con 7 segundos en el reloj, intentaron (por medio del pateador Dan Bailey) un gol de campo de 49 yardas que fue exitoso. Por desgracia, el entrenador de los vaqueros había pedido tiempo fuera antes de la ejecución, por lo que Bailey tuvo que repetir la patada. En el segundo intento se falló: el entrenador de los vaqueros “enfrió” a su propio pateador
+
+#i) Tomese Distance= 49, Wind=0 , Grass=1, Pressure=Y y Ice=1. Supóngase que Weather=”Sun” y Temperature=”Nice”. Calcular el estimado de la probabilidad de que el gol de campo sea exitoso.
+
+#ii) ¿Existe evidencia para concluir que enfriar al patedor es una buena estrategia?
+  
+#f) Calcular un modelo que considere las variables independientes Distance, Wind15, así como la interacción Distance x Wind15
+
+#g) Graficar el modelo del inciso f)
+
+#h) Usando el modelo que considera la interacción y usando razones de momios, ¿Qué se puede decir de la variable Wind15 y su relación con la probabilidad de éxito del gol de campo?
+  
+#i) Mediante pruebas de hipótesis, determinar la importancia de la interacción Distance x Wind15 en el modelo.
