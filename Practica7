@@ -1,11 +1,17 @@
 getwd()
-setwd("C://Users//USUARIO//Documents//Variables Categoricas")
+setwd("C://Users//Sala-C20//Downloads//Variables Categoricas")
+
 place<-read.table("placekick.BW.csv",header = T,sep = ",")
 
 #a) Estimar un modelo usando la función “glm( )” y la fórmula Good ~ Distance, graficar usando “curve( )”
 
 mod.fit<-glm(Good~Distance,binomial(link = logit),place)
+mod.fit$coefficients
 ## la gráfica de github y regresion
+curve(expr =exp(mod.fit$coefficients[1]+mod.fit$coefficients[2]*x)/(1+exp(mod.fit$coefficients[1]+mod.fit$coefficients[2]*x)),xlim = c(-15,15),col="black"))
+
+
+
 
 #b) Estimar un modelo (sin interacciones) que utilice las variables independientes Distance, Weather, Wind15, Temperature, Grass, Pressure y Ice.
 mod.fit1<-glm(Good~Distance+Weather+Wind15+Temperature+Grass+Pressure+Ice,binomial(link = logit),place)
@@ -48,11 +54,11 @@ http://www.redalyc.org/pdf/402/40211121.pdf
 #i) Tomese Distance= 49, Wind=0 , Grass=1, Pressure=Y y Ice=1. Supóngase que Weather=”Sun” y Temperature=”Nice”. Calcular el estimado de la probabilidad de que el gol de campo sea exitoso.
 
 #ii) ¿Existe evidencia para concluir que enfriar al patedor es una buena estrategia?
-  
+
 #f) Calcular un modelo que considere las variables independientes Distance, Wind15, así como la interacción Distance x Wind15
 
 #g) Graficar el modelo del inciso f)
 
 #h) Usando el modelo que considera la interacción y usando razones de momios, ¿Qué se puede decir de la variable Wind15 y su relación con la probabilidad de éxito del gol de campo?
-  
+
 #i) Mediante pruebas de hipótesis, determinar la importancia de la interacción Distance x Wind15 en el modelo.
