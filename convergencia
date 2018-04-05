@@ -1,0 +1,11 @@
+### definir datos que y=0 si x1<=5 o y=1 ai x1>=6
+
+set1<-data.frame(x1=1:10,y=c(0,0,0,0,0,1,1,1,1,1))
+set1
+### para analizar la convergencia 
+mod.fit1<-glm(y~x1,set1,family = binomial(link = logit),trace=T)## no se converge con las 25 iteraciones default pero aun asi los oceficientes siguien 
+x11(width = 10,height = 6,pointsize = 12)
+par(mfrow=c(1,2))
+plot(x=set1$x1,y=set1$y,main = "Gráfica de set1",ylab = "Probabilidad estimada",xlab = expression(x[1]),panel.first = grid(col="gray",lty = "dotted"))
+## agregando la gráfica del modelo ajustado que no alcanz´´o la convergencia 
+curve(expr = predict(object = mod.fit1,newdata = data.frame(x1=x),type = "response"),col="red",add=TRUE,lwd=2,n=1000)
