@@ -1,0 +1,91 @@
+### definir datos que y=0 si x1<=5 o y=1 ai x1>=6
+
+set1<-data.frame(x1=1:10,y=c(0,0,0,0,0,1,1,1,1,1))
+set1
+### para analizar la convergencia 
+mod.fit1<-glm(y~x1,set1,family = binomial(link = logit),trace=T)## no se converge con las 25 iteraciones default pero aun asi los oceficientes siguien 
+x11(width = 10,height = 6,pointsize = 12)
+par(mfrow=c(1,2))
+## si queremos guardar como pdf pdf(file="ruta\\nombre.pdf")
+plot(x=set1$x1,y=set1$y,main = "Gráfica de set1",ylab = "Probabilidad estimada",xlab = expression(x[1]),panel.first = grid(col="gray",lty = "dotted"))
+## agregando la gráfica del modelo ajustado que no alcanzó la convergencia 
+curve(expr = predict(object = mod.fit1,newdata = data.frame(x1=x),type = "response"),col="red",add=TRUE,lwd=2,n=1000)
+names(mod.fit1)
+###### ajustando un modelo con más iteraciones para ver si se converge
+mod.fit1.1<-glm(y~x1,set1,family = binomial(link = logit),trace=T,maxit=50)##  
+install.packages("logistf")
+require(logistf)
+mod.fit.firth1<-logistf(y~x1,data=set1)## usamos una funcion de verosimilitud modificada para alcanzar una convergencia suavizada, para evitar los saltos tan grandes que se dan cuando se tienen datos que solo son 0 o 1 
+options(digits = 4)
+summary(mod.fit.firth1)
+
+
+### para ver las similitudes de un logistf con glm 
+data.frame(x=set1$x1,pi.hat=mod.fit.firth1$predict)# el predict son los estimados de la probabilidad
+
+set2<-data.frame(x1=c(1,2,3,4,6,5,7,8,9,10),y=c(0,0,0,0,0,1,1,1,1,1))
+set2
+## para graficar la linea del modelo que usa la funcion de verosimilitud modificada 
+beta.hat<-mod.fit.firth1$coefficients
+curve(expr = exp(beta.hat[1]+beta.hat[2]*x)/(1+exp(beta.hat[1]+beta.hat[2]*x)),col="blue",add=TRUE,n=1000)
+legend(x=0.5,y=0.8,legend=c("glm()","logistf()"),lty = c(1,1),lwd = c(2,1),col=c("red","blue"),bty="n")
+
+## ahora al graficar el set 2 que tiene un salto en el número 5 
+## ajustando primero con glm
+mod.fit2<-glm(y~x1,set2,family = binomial(link = logit),trace=T)
+## vamos a graficar los datos 
+plot(x=set2$x1,y=set2$y,main = "Gráfica de set2",ylab = "Probabilidad estimada",xlab = expression(x[1]),panel.first = grid(col="gray",lty = "dotted"))
+curve(expr = predict(object = mod.fit2,newdata = data.frame(x1=x),type = "response"),col="red",add=TRUE,lwd=2,n=1000)## este el glm ya tuvo un mejor resultado por cambiar un valor
+mod.fit.firth2<-logistf(y~x1,data=set2)
+beta.hat<-mod.fit.firth2$coefficients
+curve(expr = exp(beta.hat[1]+beta.hat[2]*x)/(1+exp(beta.hat[1]+beta.hat[2]*x)),col="blue",add=TRUE,n=1000)
+legend(x=0.5,y=0.8,legend=c("glm()","logistf()"),lty = c(1,1),lwd = c(2,1),col=c("red","blue"),bty="n")
+
+
+## vamos a ajustar un tercer modelo
+mod.fit3<-glm(y~x1,set1,family = binomial(link = logit),trace=T,maxit=3)#no converge
+logLik(mod.fit3)## es la log verosimilitud
+mod.fit10<-glm(y~x1,set1,family = binomial(link = logit),trace=T,maxit=10)#no converge
+logLik(mod.fit10)
+mod.fit20<-glm(y~x1,set1,family = binomial(link = logit),trace=T,maxit=20)#no converge
+logLik(mod.fit20)## la log se va haciuendo mas pequeña conforme aumentan las iteraciones 
+mod.fit100<-glm(y~x1,set1,family = binomial(link = logit),trace=T,maxit=100)#no converge
+logLik(mod.fit100)
+## el valor va concergiendo a 0
+
+#########lo siguiente es aplicaciones de simulacion para ver que nuestro modelo en realidad cumple con lo que queremos
+#logit(pi)=beta0+beta1x con valor minimo 0 y máximo 1,esto de la probabilidad asociada 
+## el objetivo es encontrar beta0 y beta1 que cumplan con esas condiciones
+pi.x0<-0.01## la variable independiente vale 0 por tanto queda un beta0 de
+beta0<-log(pi.x0/(1-pi.x0))
+## valor de beta1
+pi.x1<-0.99
+beta1<-log(pi.x1/(1-pi.x1))-beta0
+beta1
+
+#lo que acabamos de hacer es querer determinar las betas con una probabilidad de .01 cuando x=0 y .99 cuando x=1
+
+## tratar de ajustar el modelo ajustado con esos valores de beta
+curve(expr=exp(beta0+beta1*x)/(1+exp(beta0+beta1*x)),xlim = c(0,1),ylab = expression(pi),n=100,lwd=3,xlab = expression(x[1]))## el n es para decir cuantos puntos queremos graficar, lwd es para que tan ancha 
+### ahora queremos simular datos y compararlos con esto que acabamos de hacer
+
+## simular datos con distribucion binomial(y ver si es buena idea simular binomial para simular un modelo de regresión logística)
+
+## generando un conjunto de datos pseudoaleatorios
+
+set.seed(8238)
+x1<- runif(n=500,min=0,max = 1)
+pi<-exp(beta0+beta1*x1)/(1+exp(beta0+beta1*x1))
+head(pi)
+
+
+set.seed(1829)
+y<-rbinom(n=length(x1),size = 1,prob = pi)
+head(data.frame(y,x1,pi),n=10)      
+
+mod.fit<-glm(y~x1,family = binomial(link = logit))## no es necesario el argumento de data porque R buscará elementos que tenga el y y el x1
+mod.fit$coefficients
+
+beta.hat0<-mod.fit$coefficients[1]
+beta.hat1<-mod.fit$coefficients[2]
+curve(expr=exp(beta.hat0+beta.hat1*x)/(1+exp(beta.hat0+beta.hat1*x)),xlim = c(0,1),ylab = expression(pi),n=100,lwd=3,xlab = expression(x[1]))## el n es para decir cuantos puntos queremos graficar, lwd es para que tan ancha 
