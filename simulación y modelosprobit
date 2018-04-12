@@ -256,7 +256,7 @@ curve(expr = plogis(beta0+beta1*x),xlim = xlim.val,col="red",lwd=2,lty=1,ylim=c(
 logistic.beta<-data.frame(name="logistic",beta0=round(beta0,rd),beta1=round(beta1,rd))
 logistic.beta
 
-#normal
+#normal(un probit es una normal)
 #(X-mu)/sigma=beta0+beta1*x###aqui esdonde cambia,del lado izquierdo ya no esta logit(pi)
 beta0<--M*pi/sqrt(V)#-mu/sigma
 beta1<-pi/sqrt(V)#1/sigma
@@ -264,3 +264,5 @@ curve(expr = pnorm(beta0+beta1*x),add=TRUE,col="blue",lwd=2,lty="dashed")
 
 normal.beta<-data.frame(name="probit",beta0=round(beta0,rd),beta1=round(beta1,rd))
 euler<-digamma(1);sigma<-sqrt(V)*sqrt(6)/pi;mu<-1-M-euler*sigma
+
+beta0<-()
