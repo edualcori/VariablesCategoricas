@@ -1,0 +1,40 @@
+set.seed(2195)  
+pi.j<-c(0.25, 0.35, 0.2, 0.1, 0.1)
+n.j<-rmultinom(n = 1, size = 1000, prob = pi.j)
+data.frame(n.j, pihat.j = n.j/1000, pi.j)
+
+set.seed(9182)
+n.j<-rmultinom(n = 5, size = 1000, prob = pi.j)
+n.j
+n.j/1000
+
+set.seed(7812)
+save2<-rmultinom(n = 1000, size = 1, prob = c(0.25, 0.35, 0.2, 0.1, 0.1))
+save2[1:5,1:3] 
+rowMeans(save2)
+
+
+################Un modelo multinomial donde  pi.11=0.2,pi.21=0.3,pi.12=0.2,pi.22=0.1,pi.13=0.1,pi.23=0.1
+pi.ij<-c(0.2,0.3,0.2,0.1,0.1,0.1)
+pi.table<-array(pi.ij,dim = c(2,3),dimnames = list(x=1:2,y=1:3))
+pi.table
+## los estimadores de maxima verosimilitud son las proporciones muestrales
+set.seed(9812)
+save<-rmultinom(n=1,size = 1000,prob = pi.ij)#n son el numero de conjuntos que queremos, size=tamaño de la muestra
+save
+c.table1<-array(save,dim = c(2,3),dimnames = list(x=1:2,y=1:3))
+c.table1
+c.table1/sum(c.table1)##probabiidades asociadas
+#.103 represenat la entrada n23 
+
+
+###I DISTRIBUCIONES MULTINOMIALES
+pi.cond<-pi.table/rowSums(pi.table)## probabilidad de que Y=j|x=i#fijamos el total de filas
+pi.cond
+
+set.seed(8111)
+save1<-rmultinom(n=1,size = 400,prob = pi.cond[1,])#cuando fijamos el total de la primera fila
+save2<-rmultinom(n=1,size = 600,prob = pi.cond[2,])
+c.table2<-array(data = c(save1[1],save2[1],save1[2],save2[2],save1[3],save2[3]),dim = c(2,3),dimnames = list(x=1:2,y=1:3))
+c.table2## sumando las filas de 1 da 400 y la 2 da 600
+c.table2/sum(c.table2)
