@@ -49,5 +49,51 @@ loglog1 <- glm( type~age+bmi,family = binomial(link = cloglog),data = train)
 loglog2 <- glm( type~age+bmi+age:bmi,family = binomial(link = cloglog),data = train)
 
 predict.data <- data.frame(age=35,bmi=32)
-probit.pi <- predict(logis1, newdata=predict.data, type="response" )
-probit.pi
+logis.pi1 <- predict(logis1, newdata=predict.data, type="response" )
+logis.pi1
+logis.pi2 <- predict(logis2, newdata=predict.data, type="response" )
+logis.pi2
+
+probit.pi1 <- predict(probit1, newdata=predict.data, type="response" )
+probit.pi1
+probit.pi2 <- predict(probit2, newdata=predict.data, type="response" )
+probit.pi2
+
+loglog.pi1 <- predict(loglog1, newdata=predict.data, type="response" )
+loglog.pi1
+
+loglog.pi2 <- predict(loglog2, newdata=predict.data, type="response" )
+loglog.pi2
+
+
+### si bmi=22 
+predict.data1<- data.frame(age=35,bmi=22)
+logis.pi1 <- predict(logis1, newdata=predict.data1, type="response" )
+logis.pi1
+logis.pi2 <- predict(logis2, newdata=predict.data1, type="response" )
+logis.pi2
+
+probit.pi1 <- predict(probit1, newdata=predict.data1, type="response" )
+probit.pi1
+probit.pi2 <- predict(probit2, newdata=predict.data1, type="response" )
+probit.pi2
+
+loglog.pi1 <- predict(loglog1, newdata=predict.data1, type="response" )
+loglog.pi1
+
+loglog.pi2 <- predict(loglog2, newdata=predict.data1, type="response" )
+loglog.pi2
+
+
+###################################################################################################################3
+##obtenga los momios de que una mujer de 55 años y bmi de 37 sea diabética
+predict.data2<- data.frame(age=55,bmi=37)
+logis.pi3 <- predict(logis1, newdata=predict.data, type="response" )
+logis.pi3
+logis.pi4 <- predict(logis2, newdata=predict.data, type="response" )
+logis.pi4
+
+momio1<-logis.pi3/(1-logis.pi3)
+momio2<-logis.pi3/(1-logis.pi3)#con interacción 
+momio1
+momio2
