@@ -31,7 +31,7 @@ sum(is.na(train$bmi))
 sum(is.na(train$ped))
 sum(is.na(train$age))
 sum(is.na(train$type))
-
+sum(is.na(train))
 
 pairs(train)
 help("Pima.te")
@@ -48,6 +48,6 @@ probit2 <- glm( type~age+bmi+age:bmi,family = binomial(link = probit),data = tra
 loglog1 <- glm( type~age+bmi,family = binomial(link = cloglog),data = train)
 loglog2 <- glm( type~age+bmi+age:bmi,family = binomial(link = cloglog),data = train)
 
-predict.data <- data.frame(distance=c(20,35,50))
-probit.pi <- predict(mod.fit.probit, newdata=predict.data, type="response" )
+predict.data <- data.frame(age=35,bmi=32)
+probit.pi <- predict(logis1, newdata=predict.data, type="response" )
 probit.pi
