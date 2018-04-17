@@ -40,10 +40,14 @@ help("Pima.te")
 #2Considerando las independientes “age” y “bmi” y la interacción entre ellas.
 
 logis1<-glm(type~age+bmi,family = binomial(link = logit),data = train)
-logis2<-glm(type~age+bmi+age:bmi,family = binomial(link = logit))
+logis2<-glm(type~age+bmi+age:bmi,family = binomial(link = logit),data = train)
 
 probit1 <- glm( type~age+bmi,family = binomial(link = probit),data = train)
 probit2 <- glm( type~age+bmi+age:bmi,family = binomial(link = probit),data = train)
 
 loglog1 <- glm( type~age+bmi,family = binomial(link = cloglog),data = train)
 loglog2 <- glm( type~age+bmi+age:bmi,family = binomial(link = cloglog),data = train)
+
+predict.data <- data.frame(distance=c(20,35,50))
+probit.pi <- predict(mod.fit.probit, newdata=predict.data, type="response" )
+probit.pi
