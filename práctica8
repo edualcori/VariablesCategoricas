@@ -1,0 +1,49 @@
+library(MASS)
+Pima.tr
+#BMI INDICE DE MASA CORPORAL
+
+#para cambiar la codificacion, poner 1 cuando si, 0 cuando no
+Pima.tr$type
+as.numeric(Pima.tr$type)-1
+## determinar cuantos NA existen es con una fión y otra que las sume 
+## pairs(pyma.tr)
+## para el 4 hacer el predict 
+pri<-Pima.tr
+seg<-Pima.tr2
+
+head(Pima.tr)
+head(Pima.tr2)
+help("Pima.tr2")
+
+train<-as.data.frame(rbind(Pima.tr,Pima.tr2))
+train
+test<-Pima.te
+train$type<-as.numeric(train$type)-1
+train$type
+head(train)
+
+##para contar los NA
+sum(is.na(train$npreg))
+sum(is.na(train$glu))
+sum(is.na(train$bp))
+sum(is.na(train$skin))
+sum(is.na(train$bmi))
+sum(is.na(train$ped))
+sum(is.na(train$age))
+sum(is.na(train$type))
+
+
+pairs(train)
+help("Pima.te")
+
+## modelo de regresion logistica
+#2Considerando las independientes “age” y “bmi” y la interacción entre ellas.
+
+logis1<-glm(type~age+bmi,family = binomial(link = logit),data = train)
+logis2<-glm(type~age+bmi+age:bmi,family = binomial(link = logit))
+
+probit1 <- glm( type~age+bmi,family = binomial(link = probit),data = train)
+probit2 <- glm( type~age+bmi+age:bmi,family = binomial(link = probit),data = train)
+
+loglog1 <- glm( type~age+bmi,family = binomial(link = cloglog),data = train)
+loglog2 <- glm( type~age+bmi+age:bmi,family = binomial(link = cloglog),data = train)
