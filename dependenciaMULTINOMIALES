@@ -1,0 +1,69 @@
+setwd("C://Users//Sala-A11//Documents//variables categóricas")
+## unha de las caracteristicas para tomar I distribuciones multinomiales es fijar el total por filas 
+#c.table1 es una distribucion multinom
+#c.table2 mas de una 
+###los estimados de maxima verosimilitud para ambos casos son los mismos
+
+
+## estudio clinico para ver el efecto de agregar fibra dietetica a la dieta, por tanto es ver si hay inchazon o no despues de haber agregado la fibra
+
+## filas: fuente de fibra, 4 niveles, ninguna fuente, fibra insoluble, fibra soluble, ambas fibras.
+# columnas: grado de inchzon despues de tomar las fibras,4 niveles,nunguna inchazon, baja, media, alta.
+
+## tratar de ver si la reaccion del cuerpo depende del tipo de fibra que se consume, es decir, ver dependencia o independencia 
+
+diet<-read.csv("Fiber.csv")
+diet
+## forma para ordenar como queremos las filas o columnas en este caso de acuerdo a lo que da la fuente del estudio
+diet$fiber<-factor(x=diet$fiber,levels = c("none","bran","gum","both"))
+diet$bloat<-factor(x=diet$bloat,levels = c("none","low","medium","high"))## variable ordinal porque importa el orden 
+
+diet.table<-xtabs(formula=count~fiber+bloat,data = diet)## una tabla que recoja ya los conteos totales
+diet.table## esta da la tabla de conteos
+### determinar si la severidad de la hinchazon depende de la fibra que se consuma
+
+#Ho pij=pi+*pi+j
+##utilizando diferentes metodos para comporbar la independencia 
+
+
+
+### prueba de independencia
+ind.test<-chisq.test(x=diet.table,correct = F)## chi cuadrada es para mestras suficientemente grandes, en R una muestra grande son mas 
+## sale que la aproximacion pede ser incorrecta cuando hay varias filas con conteos realmente bajos
+
+ind.test
+## un valor xi cuadrado de 16.943 con 9 grados de libertad, pi=0.049 como es menor a .05 se rechazaria la nula, por tanto hay evidencia en contra de la hipotesis nula es decir hay deendencia 
+
+## otra opcion es usar el summary
+summary(diet.table)
+## las dos anteriores utiizas en criterio de pearson
+
+
+
+#otra opcion es 
+
+library(vcd)
+install.packages("vcd")
+assocstats(diet.table)
+## ambos el Likelihood ratio y el pearson dan menores de ,05 por tanto hay deendencia 
+
+#esta utiliza criterio LRT
+
+########################################33
+#Cuando creemos que la chi no ajsta bien hacemos una simulacion para ver a que distribucion se ajustan nuestros datos
+
+### SIMULACIÓN MONTECARLO ##################################
+#
+n<-sum(diet.table)#tamaño de muesra
+pi.hat<-ind.test$expected/n#estimado de la probabilidad, aqui realmente estamos obteniendo el estimado del valor eserado
+#en pi_ij^ bajo HO
+
+pi.hat
+B<-1000# este va a ser el numero de conjuntos de datos a simular
+set.seed(1298)
+table.count<-rmultinom(n=B,size = n,prob = pi.hat)
+table.count[,1:2]## despejando los primeros dos conjuntos de datos simulados
+#table. count tiene 16 filas(numero de datos de cada conjuto) y 1000 columnas(numero de conjuntos simulados)
+
+rowMeans(table.count)/n
+##para calcular la chi cuadrada de algun conjunto en el archivo que enviará usar la funcipon calc.stat
