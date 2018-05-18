@@ -1,3 +1,4 @@
+setwd("C://Users//Sala-H1//Documents//VariablesCategoricas")
 #MODELOS POISSON CUANDO LA VARIABLE DEPENDIENTE E INDEPENDIENTES SON CATEGORICAS CON UN DETERMINADO NUMERO DE NIVELES 
 setwd("C://Users//USUARIO//Documents//Variables Categoricas")
 alldata <- read.table(file = "BirdCounts.csv", sep = ",", header = TRUE)
@@ -36,6 +37,7 @@ anova(M1, test ="Chisq")
 ######################################################################
 # Obtener intervalos LR para las medias.  
 library(mcprofile)
+install.packages("mcprofile")
 K <- matrix(data = c(1, 1, 0, 0, 0, 0,
                      1, 0, 1, 0, 0, 0,
                      1, 0, 0, 1, 0, 0,
@@ -70,3 +72,23 @@ contr.mat <- rbind(c(0,.5,.5,0,0,0), c(0,.5,.5,-1,0,0), c(0,.5,.5,0,-.5,-.5),
                    c(0,0,0,1,0,0), c(0,0,0,1,-.5,-.5), c(0,0,0,0,-.5,-.5))
 rownames(contr.mat) <- c("For-Edge", "For-Frag", "For-Past", "Frag-Edge", "Frag-Past", "Edge-Past")
 contr.mat
+## LOA NTERIOR DE CONTR.MAT SON COMBINACIONES LINEALES PARA HACER LAS COMPARACIOES POR EJEMPLO ESTA:
+#"c(0,.5,.5,-1,0,0) ES COMPARAR LA MEDIA DE LOS BOSQUES RESPECTO AL AREA F5RAGMENTADA 
+
+linear.combo<-mcprofile(M1,CM=contr.mat)
+summary(linear.combo)
+## como vemos los p values hay cuatro de las seis que tienen buenos ips , menores a .05, se ve la tendencia que esperaban los investigadores, es decir, no todas las medias son iguales 
+# ejemplo FOR-EDGE se rechaza H0: Las medias no son las mismas 
+
+
+exp(confint(linear.combo,adjust = "none")$confint)#intervalo de confianza para las diferencias anteriores 
+#ejemplo 
+#1.7878645 2.459671 hay al menos dos veces mas aves en promedio en el bosque que en la tierra de pastoreo(dos está en el punto medio)
+
+
+
+
+
+
+######################################### SITUACION EN LA QUE TENEMOS UNA TABLA DE CONTINGENCIA#########################
+############## LA VARIABLE DE FILAS Y COLUMNA TIENEN VARIOS NIVELES CADA UNA #######################################
