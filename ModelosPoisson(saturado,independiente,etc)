@@ -1,0 +1,38 @@
+#"CON LA BASE POLIDEODATA"
+##Modeo saturado:GPI, incluye todas las variables incluyendo interacciones entre las tes variables, gender ,party ,ideology
+mod.sat<-glm(count~gender*party*ideol,family = poisson(link="log"),data = alldata)
+#Modelo de asociación homogénea: GP,GI,PI: supone que hay interacciones entre dos variables pero no las tres 
+mod.hom<-glm(count~(gender+party+ideol)^2,family = poisson(link="log"),data = alldata)
+
+### COMPAREMOS LOS DOS MODELOS ANTERIORES MOD.SAT VS MOD.HOM
+anova(mod.hom,mod.sat,test = "Chisq")
+## HO ES QUE HO=((Bjk)^PI=0), J=D,R,K=1,2,,,5
+## COMO P>.05 NO SE RECHAZA HIPOTESIS NULA Y POR TANTO LOS COEFICIENTES NO SON CERO Y EL MODELO DE ASOCIACION HOMOGENEA AJUSTA BIEN A COMPARACIÓN DEL SATURADO
+
+
+#MODELO que sólo considera asociación PI, es decir que el sexo se considera aparte y veremos si hay asociación entre partido político e ideología política PI: G,PI
+mod.hom.PI<-glm(count~gender+party*ideol,family = poisson(link="log"),data = alldata)
+anova(mod.hom.PI,mod.hom,test = "Chisq")
+##### comop p<.05 rechazamos la HO por tanto ajusta mejor el mod.hom
+
+
+################################################# MODELO DE INDEPENDENCIA MUTUA ################################
+mod.indep<-glm(count~gender+party+ideol,family=poisson(link="log"),data = alldata)
+anova(mod.indep,mod.hom.PI,test="Chisq")
+# rechazamoshipotesis nula por lo tanto ajusta mejor el mod.hom.PI
+
+#¿Qué coeficientes son importantes para el modelo?
+library(car)
+Anova(mod.hom)
+### vemos que los que son menores a .05,por lo tanto, son importantes para el modelo
+
+
+
+
+
+######################################### OR #####################################
+exp(0.276)## Momios de ser republicanos de hombre contra mujeres
+# para hombres el momio es ligeramente más grande(hombres en el numerador), por tanto existe una mayor probabilidad que un hombre sea republicano
+
+### ejemplo para OR tener ideología política más conservadora respecto a ideología política menos conservadora en terminos de hombres y mujeres
+4
