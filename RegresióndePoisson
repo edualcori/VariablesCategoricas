@@ -1,0 +1,20 @@
+c.table <- array(data = c(251, 48, 34, 5), dim = c(2,2), dimnames = list(First = c("made", "missed"),
+                                                                         Second = c("made", "missed")))
+
+all.data <- as.data.frame(as.table(c.table))
+all.data
+
+
+M1 <- glm(formula = Freq ~ First*Second, family = poisson(link = "log"), data = all.data)
+summary(M1)
+
+# Estimado de la razÃ³n de momios
+
+round(exp(M1$coefficients[4]), digits = 2)
+inter <- confint(M1, parm = "Firstmissed:Secondmissed")
+round(exp(inter), digits = 2)
+round(exp(confint.default(M1, parm = "Firstmissed:Secondmissed")), digits = 2)
+
+
+library(car)
+Anova(M1) # Prueba para OR = 1 
