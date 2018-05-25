@@ -8,8 +8,51 @@ View(alldata)
 mod.hom.lin1.PI<-glm(count~gender*party+gender*ideol+party*lin.score1,family = poisson(link="log"),data=alldata)#aqui como estamos en PI,y la I es laordinal,multiplicamos P*scores
 summary(mod.hom.lin1.PI)
 
-library(car)
-install.packages("car")
-Anova(mod.hom.lin1.PI)##las que sean menores a .05 son significativas 
-#ahora, debemos quitarlos valores NA del modelo
-mod.homo.lin1.PI$coeficcients<- mod.homo.lin1.PI$coeficcients[¡checkNA]
+
+contr.mat <- rbind(c(rep(0, 7), 1, 0, 0, 0, 0, 0), 
+                   c(rep(0, 7), 0,-1, 0, 1, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 1, 0, 0),
+                   c(rep(0, 7), 0, 0,-1, 1, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 1,-1, 0),
+                   c(rep(0, 7), 0, 1, 0, 0, 0, 0),
+                   c(rep(0, 7), 0, 1,-1, 0, 0, 0),
+                   c(rep(0, 7), 0, 1, 0, 0,-1, 0),
+                   c(rep(0, 7), 0, 0,-1, 0, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 0,-1, 0),
+                   c(rep(0, 7), 0, 0, 1, 0,-1, 0),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 1),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 2),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 3),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 4)
+)
+
+check.na <- is.na(mod.hom.lin1.PI$coefficients)
+mod.hom.lin1.PI$coefficients <- mod.hom.lin1.PI$coefficients[!check.na]
+
+library(multcomp)
+wald <- glht(mod.hom.lin1.PI, linfct = contr.mat)
+wald.ci <- round(exp(confint(wald, calpha = qnorm(0.975))$confint), 2)
+row.names(wald.ci) <- c("GP Rep | M:F", "GI VC:SC | M:F", "GI VC:M | M:F", "GI VC:SL | M:F", "GI VC:VL | M:F", "GI SC:M | M:F", "GI SC:SL | M:F", "GI SC:VL | M:F", "GI M:SL | M:F", "GI M:VL | M:F", "GI SL:VL | M:F", "PI REP | 1 Cat Ideol", "PI REP | 2 Cat Ideol", "PI REP | 3 Cat Ideol", "PI REP | 4 Cat Ideol")
+colnames(wald.ci) <- c("Estimate", "Lower CI", "Upper CI")
+wald.ci
+
+
+#intervalos de Wald de manera manual 
+beta<-matrix(coef(mod.hom.lin1.PI),ncol = 1)
+beta
+
+v.beta<-vcov(mod.hom.lin1.PI)
+v.beta
+
+log.contrast<-contr.mat%*%beta
+SElog.contrast<-matrix(sqrt(diag(contr.mat%*%v.beta%*%t(contr.mat) )),ncol = 1)
+alpha<-0.05
+lower.log<-log.contrast+qnorm(alpha/2)*SElog.contrast
+upper.log<-log.contrast+qnorm(1-alpha/2)*SElog.contrast
+wald.ci.1<-round(data.frame(exp(log.contrast),exp(lower.log),exp(upper.log)),digits = 2)
+wald.ci.1
+
+##comparando los modelos homogeneos,el ordinal y no ordinal(ajustado antes)
+
+anova(mod.hom.lin1.PI,mod.hom,test = "Chisq")
+#con un valor p de .16 no rechazamos hipotesis nula , por tanto el sistema de puntuaciones ajusta bien
