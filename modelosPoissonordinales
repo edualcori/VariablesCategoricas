@@ -1,0 +1,15 @@
+##ajustando modelio poisson considerando como ordinal
+lin.score1<-c(rep(x=c(1,2,3,4,5),times=4))
+lin.score2<-c(rep(x=c(0,2,3,4,6),times=4))
+extrem.score<-c(rep(x=c(2,1,0,1,2),times=4))
+alldata<-data.frame(alldata,lin.score1,lin.score2,extrem.score)
+View(alldata)
+#vamos a ajustar un modelo homogéneo en PI:puntuación 1,2,3,4,5
+mod.hom.lin1.PI<-glm(count~gender*party+gender*ideol+party*lin.score1,family = poisson(link="log"),data=alldata)#aqui como estamos en PI,y la I es laordinal,multiplicamos P*scores
+summary(mod.hom.lin1.PI)
+
+library(car)
+install.packages("car")
+Anova(mod.hom.lin1.PI)##las que sean menores a .05 son significativas 
+#ahora, debemos quitarlos valores NA del modelo
+mod.homo.lin1.PI$coeficcients<- mod.homo.lin1.PI$coeficcients[¡checkNA]
