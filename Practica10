@@ -40,3 +40,96 @@ anova(mod.hom.GI,mod.hom.lin3.GI,test = "Chisq")
 
 # ENTENDIENDO QUE HO=modelo 1 es mejor que el 2,como p-value es menor a .05 rechazamos la hipótesis nula y por tanto concluimos
 # que el modelo ordinal con puntuaciones 2,1,0,1,2 para Ideologia ajusta mejor a los datos analizados.
+
+
+
+
+
+
+
+
+summary(mod.hom.GI)
+
+
+## intervalos de confianza de wald para los modelos ordinal y nominal 
+library(multcomp)
+
+#### MODELO ORDINAL
+
+check.na <- is.na(mod.hom.lin3.GI$coefficients)
+mod.hom.lin3.GI$coefficients <- mod.hom.lin3.GI$coefficients[!check.na]
+contr.mat <- rbind(c(rep(0, 7), 1, 0, 0, 0, 0, 0), 
+                   c(rep(0, 7), 0,-1, 0, 1, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 1, 0, 0),
+                   c(rep(0, 7), 0, 0,-1, 1, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 1,-1, 0),
+                   c(rep(0, 7), 0, 1, 0, 0, 0, 0),
+                   c(rep(0, 7), 0, 1,-1, 0, 0, 0),
+                   c(rep(0, 7), 0, 1, 0, 0,-1, 0),
+                   c(rep(0, 7), 0, 0,-1, 0, 0, 0),
+                   c(rep(0, 7), 0, 0, 0, 0,-1, 0),
+                   c(rep(0, 7), 0, 0, 1, 0,-1, 0),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 1),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 2),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 3),
+                   c(rep(0, 7), 0, 0, 0, 0, 0, 4)
+)
+
+
+#intervalos de Wald de manera manual para el modelo manual 
+beta<-matrix(coef(mod.hom.lin3.GI),ncol = 1)
+beta
+
+v.beta<-vcov(mod.hom.lin3.GI)
+v.beta
+
+log.contrast<-contr.mat%*%beta
+SElog.contrast<-matrix(sqrt(diag(contr.mat%*%v.beta%*%t(contr.mat) )),ncol = 1)
+alpha<-0.05
+lower.log<-log.contrast+qnorm(alpha/2)*SElog.contrast
+upper.log<-log.contrast+qnorm(1-alpha/2)*SElog.contrast
+wald.ci.1<-round(data.frame(exp(log.contrast),exp(lower.log),exp(upper.log)),digits = 2)
+wald.ci.1
+
+
+
+
+
+
+
+####################################### INTERVALOS PARA EL MODELO NOMINAL ######################################################
+
+
+contr.mat1 <- rbind(c(rep(0, 5), 1, 0, 0, 0, 0, 0), 
+                   c(rep(0, 5), 0,-1, 0, 1, 0, 0),
+                   c(rep(0, 5), 0, 0, 0, 1, 0, 0),
+                   c(rep(0, 5), 0, 0,-1, 1, 0, 0),
+                   c(rep(0, 5), 0, 0, 0, 1,-1, 0),
+                   c(rep(0, 5), 0, 1, 0, 0, 0, 0),
+                   c(rep(0, 5), 0, 1,-1, 0, 0, 0),
+                   c(rep(0, 5), 0, 1, 0, 0,-1, 0),
+                   c(rep(0, 5), 0, 0,-1, 0, 0, 0),
+                   c(rep(0, 5), 0, 0, 0, 0,-1, 0),
+                   c(rep(0, 5), 0, 0, 1, 0,-1, 0),
+                   c(rep(0, 5), 0, 0, 0, 0, 0, 1),
+                   c(rep(0, 5), 0, 0, 0, 0, 0, 2),
+                   c(rep(0, 5), 0, 0, 0, 0, 0, 3),
+                   c(rep(0, 5), 0, 0, 0, 0, 0, 4)
+)
+
+
+#intervalos de Wald de manera manual para el modelo manual 
+beta1<-matrix(coef(mod.hom.GI),ncol = 1)
+beta1
+
+v.beta1<-vcov(mod.hom.GI)
+v.beta1
+
+log.contrast1<-contr.mat1%*%beta1
+SElog.contrast1<-matrix(sqrt(diag(contr.mat1%*%v.beta1%*%t(contr.mat1) )),ncol = 1)
+alpha<-0.05
+lower.log1<-log.contrast1+qnorm(alpha/2)*SElog.contrast1
+upper.log1<-log.contrast1+qnorm(1-alpha/2)*SElog.contrast1
+wald.ci.2<-round(data.frame(exp(log.contrast1),exp(lower.log1),exp(upper.log1)),digits = 2)
+wald.ci.2
+
