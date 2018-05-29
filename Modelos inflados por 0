@@ -1,0 +1,34 @@
+eggdata <- read.table(file = "C:\\Data\\BeetleEggCrowding.txt", header = TRUE)
+eggdata$females <- ifelse(test = eggdata$TRT == "I", yes = 1, no = 5)
+head(eggdata)
+
+
+## haciendo un subconjtno
+eggdata2<-eggdata[eggdata$TRT=="I",]
+x11()
+stripchart(NumEggs~Temp,method="stack",data = eggdata2,ylab="Temperatura",xlab="Numero de masas de huevos")
+
+############### Ajustando e modelo ZIP (ZERO INFLATION POISSON)
+library(pscl)
+install.packages("pscl")
+zip.mod.tt<-zeroinfl( NumEggs~Temp|Temp,dist = "poisson",data = eggdata2)### la variable independiente solo es la temperatura, aqui del lado iaquierdo va la independiente  
+summary(zip.mod.tt)
+##########MODELO ZIP con temperatura en la media solamente 
+zip.mod.t0<-zeroinfl( NumEggs~Temp|1,dist = "poisson",data = eggdata2)
+summary(zip.mod.t0)
+
+######MODELO ZIP con Temp en la probabilidad solamente 
+zip.mod.0t<-zeroinfl( NumEggs~1|Temp,dist = "poisson",data = eggdata2)
+
+###modelo donde la temperatura no esta en ninguno
+zip.mod.00<-zeroinfl( NumEggs~1|1,dist = "poisson",data = eggdata2)
+
+
+
+
+####################### ¿cuál de todos los modelos anteriores ajusta mejor? ##########################################
+library(lmtest)
+
+lrtest(zip.mod.0t,zip.mod.tt)## como p<.05 ajusta mejor el tt Ho ajusta mejor el 0t , por tanto rechazamos la nula y ajusta mejor el tt
+lrtest(zip.mod.t0,zip.mod.tt)## ajusta mejor el t0
+
