@@ -1,0 +1,42 @@
+setwd("C://Users//8//Documents//DECIMO//Análisis de Variables Categóricas")
+alldata<-read.csv("PolIdeolData.csv")
+
+lin.score1<-c(rep(x=c(1,2,3,4,5),times=4))
+lin.score2<-c(rep(x=c(0,2,3,4,6),times=4))
+extrem.score<-c(rep(x=c(2,1,0,1,2),times=4))
+alldata<-data.frame(alldata,lin.score1,lin.score2,extrem.score)
+View(alldata)
+
+# Modelo  GI:puntuación 1,2,3,4,5
+mod.hom.lin1.GI<-glm(count~gender*party+gender*lin.score1+party*ideol,family = poisson(link="log"),data=alldata)#aqui como estamos en PI,y la I es la ordinal,multiplicamos P*scores
+
+# Modelo  GI:puntuación 0,2,3,4,6
+mod.hom.lin2.GI<-glm(count~gender*party+gender*lin.score2+party*ideol,family = poisson(link="log"),data=alldata)#aqui como estamos en PI,y la I es la ordinal,multiplicamos P*scores
+
+# Modelo  GI:puntuación 2,1,0,1,2
+mod.hom.lin3.GI<-glm(count~gender*party+gender*extrem.score+party*ideol,family = poisson(link="log"),data=alldata)#aqui como estamos en PI,y la I es la ordinal,multiplicamos P*scores
+
+
+#ELIGIENDO EL QUE TIENE MENOR DESVIACIÓN Y AL MISMO TIEMPO  VERIFICANDO SI LA ASOCIACIÓN ES DE IMPORTANCIA
+
+summary(mod.hom.lin1.GI)
+## como vemos , el p-value de la asociación es .34500 y por lo tanto podemos conlcuir que la asociación GI no es de importancia para el modelo.
+## null deviance: 255.148, residual deviance:11.318
+summary(mod.hom.lin2.GI)
+## como vemos , el p-value de la asociación es .4140 y por lo tanto podemos conlcuir que la asociación GI no es de importancia para el modelo.
+## null deviance: 255.148, residual deviance:11.543
+
+summary(mod.hom.lin3.GI)
+## como vemos , el p-value de la asociación es .012 y por lo tanto podemos conlcuir que la asociación GI  es de importancia para el modelo.
+## null deviance: 255.1481, residual deviance: 5.9712
+
+# POR LO TANTO EL MODELO ELEGIDO ES EL DE PUNTUACIONES 2,1,0,1,2 O SEA,mod.hom.lin3.GI
+#el modelo se eligió porque tiene la menor desviación nula y residual y aparte tiene un menor valor de AIC lo cual representa que ese modelo ajusta mejor a los datos.
+
+
+## comparando este modelo con el modelo nominal 
+mod.hom.GI<-glm(count~gender*ideol+party,family = poisson(link="log"),data = alldata)
+anova(mod.hom.GI,mod.hom.lin3.GI,test = "Chisq")
+
+# ENTENDIENDO QUE HO=modelo 1 es mejor que el 2,como p-value es menor a .05 rechazamos la hipótesis nula y por tanto concluimos
+# que el modelo ordinal con puntuaciones 2,1,0,1,2 para Ideologia ajusta mejor a los datos analizados.
